@@ -1,3 +1,20 @@
+/**
+ * Shamanic Web Application
+ * @copyright 2015 Shamanic
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*	http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 /** dependancies */
 var express = require('express');
 var path = require('path');
@@ -6,15 +23,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-/** map route variables */
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
 /** view engine setup */
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+/** load application resources */
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -22,53 +36,45 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/** map URLs to routes */
-app.use('/', routes);
-app.use('/users', users);
-
-/** DB config */
-var config = {
+/** DB config and utilities via wrapper */
+var DBConfig = {
   db:{
     host:"localhost",
     database:"shamanic",
     username:"root",
     password:"password"
-  },
+  }
 }
-
-/**
- * DB utilities via wrapper
- */
 var DBWrapper = require('node-dbi').DBWrapper;
-var dbConnectionConfig = { host:config.db.host, user:config.db.username, password:config.db.password, database:config.db.database };
+var dbConnectionConfig = { host:DBConfig.db.host, user:DBConfig.db.username, password:DBConfig.db.password, database:DBConfig.db.database };
 var dbWrapper = new DBWrapper('pg', dbConnectionConfig);
 
-/*
-
-@todo
-
-dbWrapper.connect();
-dbWrapper.fetchAll('select 1 where 1', null, function (err, result) {
-  if (!err) {
-    console.log("Data came back from the DB.");
-  } else {
-    console.log("DB returned an error: %s", err);
-  }
-  dbWrapper.close(function (close_err) {
-    if (close_err) {
-      console.log("Error while disconnecting: %s", close_err);
-    }
-  });
+/** Make our db accessible to our router */
+app.use(function(req,res,next){
+    req.db = dbWrapper;
+    next();
 });
 
-module.exports = config;
-module.exports = dbWrapper;
+/*************************************************************** 
+ * MAP URLS TO ROUTES
+ ***************************************************************/
+var users = require('./routes/users');
+var site = require('./routes/index');
 
-*/
+/** homepage */
+app.get('/', site.index);
 
-/**************************
- *  error handlers
- **************************/
+/** users */
+app.get('/users', users.list);
+app.all('/user/:id/:op?', users.load);
+app.get('/user/:id', users.view);
+app.get('/user/:id/view', users.view);
+app.get('/user/:id/edit', users.edit);
+app.put('/user/:id/edit', users.update);
+
+/**************************************************************
+ *  ERROR HANDLERS
+ **************************************************************/
 
 /** catch 404 and forwarding to error handler */
 app.use(function(req, res, next) {
