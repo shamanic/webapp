@@ -26,7 +26,7 @@ var bodyParser = require('body-parser');
 /** view engine setup */
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 /** load application resources */
 app.use(favicon());
@@ -49,7 +49,7 @@ var DBWrapper = require('node-dbi').DBWrapper;
 var dbConnectionConfig = { host:DBConfig.db.host, user:DBConfig.db.username, password:DBConfig.db.password, database:DBConfig.db.database };
 var dbWrapper = new DBWrapper('pg', dbConnectionConfig);
 
-/** Make our db accessible to our router */
+/** make our db accessible to our router */
 app.use(function(req,res,next){
     req.db = dbWrapper;
     next();
@@ -58,19 +58,23 @@ app.use(function(req,res,next){
 /*************************************************************** 
  * MAP URLS TO ROUTES
  ***************************************************************/
-var users = require('./routes/users');
-var site = require('./routes/index');
+var site = require('./controllers/index');
+var game = require('./controllers/game');
+var users = require('./controllers/users');
+var userModel = require('./models/userModel');
 
 /** homepage */
 app.get('/', site.index);
 
+/** play game */
+app.get('/game', game.index);
+
 /** users */
-app.get('/users', users.list);
-app.all('/user/:id/:op?', users.load);
-app.get('/user/:id', users.view);
-app.get('/user/:id/view', users.view);
-app.get('/user/:id/edit', users.edit);
-app.put('/user/:id/edit', users.update);
+app.get('/user/account', users.myaccount);
+app.get('/user/login', users.login);
+app.get('/user/logout', users.logout);
+app.get('/user/update', users.update);
+app.get('/user/signup', users.signup);
 
 /**************************************************************
  *  ERROR HANDLERS
@@ -78,9 +82,18 @@ app.put('/user/:id/edit', users.update);
 
 /** catch 404 and forwarding to error handler */
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
+    var err = new Error('HTTP 404 Page can not be found.');
     err.status = 404;
     next(err);
+});
+
+/** production error handler no stacktraces shown to user */
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
 });
 
 /** development error handler will print stacktrace */
@@ -93,15 +106,6 @@ if (app.get('env') === 'development') {
         });
     });
 }
-
-/** production error handler no stacktraces shown to user */
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
 
 /** export the app */
 module.exports = app;

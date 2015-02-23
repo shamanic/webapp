@@ -1,0 +1,27 @@
+<% include ../../partials/header %>
+<div class='main-container' ng-controller='userController'>
+	<div class="row">
+		<div class="six columns">
+			<form class="custom">
+				<fieldset>
+					<legend>Enter your information to play</legend>
+					<input type="text" placeholder="Full name"> 
+					<input type="text" placeholder="Email"> 
+					<input type="text" placeholder="Chose User Name">
+				</fieldset>
+				<div class="row">
+					<div class="large-6 large-centered columns">
+						<input type="submit" class="button expand" value="Join Us" />
+					</div>
+				</div>
+			</form>
+			<div class="row">
+				<ul class="inline-list right">
+					<li><a href="/user/login">Login</a></li>
+					<li><a href="#">Forgot Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<% include ../../partials/footer %>

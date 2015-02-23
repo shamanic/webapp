@@ -1,0 +1,35 @@
+<% include ../../partials/header %>
+<div class='main-container' ng-controller='userController'>
+	<div class="large-3 large-centered columns">
+		<div class="login-box">
+			<div class="row">
+				<div class="large-12 columns">
+					<form>
+						<div class="row">
+							<div class="large-12 columns">
+								<input type="text" name="username" placeholder="Username" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="large-12 columns">
+								<input type="password" name="password" placeholder="Password" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="large-12 large-centered columns">
+								<input type="submit" class="button expand" value="Log In" />
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<ul class="inline-list right">
+					<li><a href="/user/signup">Signup</a></li>
+					<li><a href="#">Forgot Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<% include ../../partials/footer %>
