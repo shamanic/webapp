@@ -2,12 +2,14 @@
 <div class='main-container' ng-controller='userController'>
 	<div class="row">
 		<div class="six columns">
-			<form class="custom">
+			<form class="custom" action="/user/create" method="post" enctype="application/x-www-form-urlencoded">
 				<fieldset>
 					<legend>Enter your information to play</legend>
-					<input type="text" placeholder="Full name"> 
-					<input type="text" placeholder="Email"> 
-					<input type="text" placeholder="Chose User Name">
+					<input type="text" placeholder="Full name">
+					<input type="text" name="email" placeholder="Email">
+					<input type="text" name="username" placeholder="Choose User Name">
+					<input type="password" name="password" placeholder="Choose Password">
+					<input type="password" name="confirm" placeholder="Confirm Password">
 				</fieldset>
 				<div class="row">
 					<div class="large-6 large-centered columns">

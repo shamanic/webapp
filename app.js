@@ -40,18 +40,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 var DBConfig = {
   db:{
     host:"localhost",
-    database:"shamanic",
-    username:"root",
-    password:"password"
+    username:"shamanic_user",
+    password:"password",
+    database:"shamanic"
   }
 }
 var DBWrapper = require('node-dbi').DBWrapper;
 var dbConnectionConfig = { host:DBConfig.db.host, user:DBConfig.db.username, password:DBConfig.db.password, database:DBConfig.db.database };
 var dbWrapper = new DBWrapper('pg', dbConnectionConfig);
+dbWrapper.connect();
 
-/** make our db accessible to our router */
+/** make our db and application models and other global libraries accessible to our router */
 app.use(function(req,res,next){
     req.db = dbWrapper;
+    req.db.DBExpr = require('node-dbi').DBExpr; 
     next();
 });
 
@@ -61,20 +63,33 @@ app.use(function(req,res,next){
 var site = require('./controllers/index');
 var game = require('./controllers/game');
 var users = require('./controllers/users');
-var userModel = require('./models/userModel');
 
-/** homepage */
+/** 
+ * HOMEPAGE 
+ */
 app.get('/', site.index);
 
-/** play game */
+/** 
+ * PLAY GAME 
+ */
 app.get('/game', game.index);
 
-/** users */
-app.get('/user/account', users.myaccount);
+/** 
+ * USERS 
+ */
+
+/** login / logout */
 app.get('/user/login', users.login);
 app.get('/user/logout', users.logout);
+
+/** edit account */
+app.get('/user/account', users.myaccount);
 app.get('/user/update', users.update);
+
+/** create users */
 app.get('/user/signup', users.signup);
+app.post('/user/create', users.create);
+app.post('/user/checkExistingValue', users.checkExistingUserValues);
 
 /**************************************************************
  *  ERROR HANDLERS
@@ -91,6 +106,7 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
+    	title: 'Application Error',
         message: err.message,
         error: {}
     });
@@ -101,6 +117,7 @@ if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
+        	title: 'Application Error',
             message: err.message,
             error: err
         });
