@@ -3,7 +3,7 @@ CREATE TABLE users
   user_id serial NOT NULL,
   uuid uuid,
   username character varying(50) NOT NULL,
-  password character varying(50) NOT NULL,
+  password character varying(100) NOT NULL,
   email character varying(355) NOT NULL,
   created_on timestamp without time zone NOT NULL,
   last_login timestamp without time zone,

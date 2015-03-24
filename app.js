@@ -22,6 +22,7 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('client-sessions');
 
 /** view engine setup */
 var app = express();
@@ -36,27 +37,35 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/** DB config and utilities via wrapper */
-var DBConfig = {
-  db:{
-    host:"localhost",
-    username:"shamanic_user",
-    password:"password",
-    database:"shamanic"
-  }
-}
-var DBWrapper = require('node-dbi').DBWrapper;
-var dbConnectionConfig = { host:DBConfig.db.host, user:DBConfig.db.username, password:DBConfig.db.password, database:DBConfig.db.database };
-var dbWrapper = new DBWrapper('pg', dbConnectionConfig);
-dbWrapper.connect();
-
 /** make our db and application models and other global libraries accessible to our router */
+var dbi = require('./db/config');
+dbi.dbWrapper.connect();
 app.use(function(req,res,next){
-    req.db = dbWrapper;
+    req.db = dbi.dbWrapper;
     req.db.DBExpr = require('node-dbi').DBExpr; 
     next();
 });
 
+/** configure the client-sessions options */
+app.use(session({
+	  cookieName: 'shamanic_session',
+	  secret: '|Wj#1Kj&l1MQ*I!"19MbIQ4,[!d0DG',
+	  duration: 86400000,
+	  activeDuration: 86400000,
+	  httpOnly: true,
+	  secure: false,
+	  ephemeral: true
+	}));
+
+/** generic require logged in user checking for any routes that may require it  */
+function requireLogin (req, res, next) {
+  if (!req.user) {
+    res.redirect('/user/login');
+  } else {
+    next();
+  }
+};
+	
 /*************************************************************** 
  * MAP URLS TO ROUTES
  ***************************************************************/
@@ -72,7 +81,7 @@ app.get('/', site.index);
 /** 
  * PLAY GAME 
  */
-app.get('/game', game.index);
+app.get('/game', requireLogin, game.index);
 
 /** 
  * USERS 
@@ -80,11 +89,12 @@ app.get('/game', game.index);
 
 /** login / logout */
 app.get('/user/login', users.login);
+app.post('/user/checkLogin', users.checkLogin);
 app.get('/user/logout', users.logout);
 
 /** edit account */
-app.get('/user/account', users.myaccount);
-app.get('/user/update', users.update);
+app.get('/user/account', requireLogin, users.myaccount);
+app.get('/user/update', requireLogin, users.update);
 
 /** create users */
 app.get('/user/signup', users.signup);

@@ -10,17 +10,30 @@ exports.myaccount = function(req, res) {
 /** 
  * show the login page 
  */
-exports.login = function(req, res) {
+exports.login = function(req, res) {	
 	res.render('pages/users/login', {
 		title : 'Shamanic [login]'
 	});
 };
 
+/**
+ * upon valid login credentials 
+ * 	set secure cookie with the user's info
+ */
+exports.checkLogin = function(req, res) { 
+	
+	console.log(res.body);
+	
+    //req.session.user = user;
+    res.redirect('/user/account');
+}
+
 /** 
  * logout then redirect to home page 
  */
 exports.logout = function(req, res) {
-
+      req.session.reset();
+      res.redirect('/');
 };
 
 /** 
@@ -43,8 +56,15 @@ exports.signup = function(req, res) {
  * create user here 
  */
 exports.create = function(req, res) {
+	
+	/** create user object with the bcrypted password*/
+	var bcrypt = require('bcrypt');
+	var salt = bcrypt.genSaltSync(10);
+	var hashedPassword = bcrypt.hashSync(req.body.password, salt);
+	var userObj = {email : req.body.email,username : req.body.username,password : hashedPassword};
+	
+	/** create new UUID and insert user */
 	var uuid = require('node-uuid');
-	var userObj = {email : req.body.email,username : req.body.username,password : req.body.password};
 	userObj.uuid = uuid.v1();
 	userObj.created_on = new req.db.DBExpr('NOW()');
 	req.db.insert('users', userObj , function(err) {
