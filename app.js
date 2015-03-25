@@ -23,6 +23,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('client-sessions');
+var bcrypt = require('bcrypt');
 
 /** view engine setup */
 var app = express();
@@ -37,15 +38,6 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/** make our db and application models and other global libraries accessible to our router */
-var dbi = require('./db/config');
-dbi.dbWrapper.connect();
-app.use(function(req,res,next){
-    req.db = dbi.dbWrapper;
-    req.db.DBExpr = require('node-dbi').DBExpr; 
-    next();
-});
-
 /** configure the client-sessions options */
 app.use(session({
 	  cookieName: 'shamanic_session',
@@ -57,9 +49,20 @@ app.use(session({
 	  ephemeral: true
 	}));
 
+/** make our db and application models and other global libraries accessible to our router */
+var dbi = require('./db/config');
+dbi.dbWrapper.connect();
+app.use(function(req,res,next){
+    req.db = dbi.dbWrapper;
+    req.db.DBExpr = require('node-dbi').DBExpr; 
+    req.bcrypt = bcrypt;
+    req.session = session;
+    next();
+});
+
 /** generic require logged in user checking for any routes that may require it  */
 function requireLogin (req, res, next) {
-  if (!req.user) {
+  if (!req.session.user) {
     res.redirect('/user/login');
   } else {
     next();

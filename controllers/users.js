@@ -3,7 +3,8 @@
  */
 exports.myaccount = function(req, res) {
 	res.render('pages/users/account', {
-		title : 'Shamanic: [manage your account]'
+		title : 'Shamanic: [manage your account]',
+		username: req.session.user.username 
 	});
 };
 
@@ -20,12 +21,28 @@ exports.login = function(req, res) {
  * upon valid login credentials 
  * 	set secure cookie with the user's info
  */
-exports.checkLogin = function(req, res) { 
-	
-	console.log(res.body);
-	
-    //req.session.user = user;
-    res.redirect('/user/account');
+exports.checkLogin = function(req, res) {
+	req.db.fetchRow('SELECT uuid, username,password FROM users WHERE username = ?', [req.body.username], function(err, result) {
+
+		/** if results and no errors check the user password against DB and set the user to the session */
+		try{
+			if (req.bcrypt.compareSync(req.body.password, result.password)) {
+				req.session.user = {uuid:result.uuid,username:result.username};
+				res.redirect('/user/account');
+			} else {
+			    /** render error message, user not found */
+			    res.render('pages/response', {
+		    		response : 'not found'
+		    	});
+			}
+		} catch (err) {
+		    /** render error message, user not found */
+			console.log(err);
+		    res.render('pages/response', {
+	    		response : 'not found'
+	    	});		    
+		}
+	} );
 }
 
 /** 
@@ -58,9 +75,8 @@ exports.signup = function(req, res) {
 exports.create = function(req, res) {
 	
 	/** create user object with the bcrypted password*/
-	var bcrypt = require('bcrypt');
-	var salt = bcrypt.genSaltSync(10);
-	var hashedPassword = bcrypt.hashSync(req.body.password, salt);
+	var salt = req.bcrypt.genSaltSync(10);
+	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
 	var userObj = {email : req.body.email,username : req.body.username,password : hashedPassword};
 	
 	/** create new UUID and insert user */
@@ -88,6 +104,8 @@ exports.create = function(req, res) {
  * check if any user values are already existing 
  */
 exports.checkExistingUserValues = function(req, res) {
+	
+	/** @todo have this query escaped safely */
 	req.db.fetchRow('SELECT * FROM users WHERE '+req.body.property+'=\''+req.body.value+'\'', function(err, result) {
 		var existingUserValue = 'value exists';
 	    if( ! result ) {
