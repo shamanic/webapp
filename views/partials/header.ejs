@@ -38,9 +38,13 @@
 			</nav>
 			<aside class="left-off-canvas-menu">
 				<ul class="off-canvas-list">
-					<li><a href="/user/account">My Account</a></li>
-					<li><a href="/user/login">Login</a></li>
-					<li><a href="/user/signup">Signup</a></li>
+					<% if(loggedIn){ %>
+					    <li><a href="/user/account">My Account</a></li>
+					    <li><a href="/user/logout">Logout</a></li>
+ 					<% } else{ %>  
+					    <li><a href="/user/login">Login</a></li>
+					    <li><a href="/user/signup">Signup</a></li>
+					<% } %>
 				</ul>
 			</aside>
 			<aside class="right-off-canvas-menu">
@@ -54,3 +58,6 @@
 			<!-- Page Content  -->
 			<section class="main-section">
 				<div class="small-12 columns">
+				
+				
+				

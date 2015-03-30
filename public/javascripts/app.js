@@ -3,7 +3,7 @@
  * 
  * @author khinds (c) shamanic.io, http://www.shamanic.io
  */
-var shamanicWebApp = angular.module('shamanicWebApp', [ 'mm.foundation', 'indexController', 'userController', 'gameController', 'menuControllers']);
+var shamanicWebApp = angular.module('shamanicWebApp', [ 'mm.foundation', 'indexController', 'userControllers', 'gameController', 'menuControllers']);
 
 /** Intercept POST requests, convert to standard form encoding */
 shamanicWebApp.config([ '$httpProvider', function($httpProvider) {

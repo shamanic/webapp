@@ -68,7 +68,16 @@ function requireLogin (req, res, next) {
     next();
   }
 };
-	
+
+/** check user logged in */
+app.use(function (req, res, next) {
+	res.locals.loggedIn =false;
+	  if (req.session.user) {
+		  res.locals.loggedIn =true;
+	  }
+	next();
+});
+
 /*************************************************************** 
  * MAP URLS TO ROUTES
  ***************************************************************/
@@ -97,7 +106,7 @@ app.get('/user/logout', users.logout);
 
 /** edit account */
 app.get('/user/account', requireLogin, users.myaccount);
-app.get('/user/update', requireLogin, users.update);
+app.post('/user/update', requireLogin, users.update);
 
 /** create users */
 app.get('/user/signup', users.signup);
@@ -139,3 +148,4 @@ if (app.get('env') === 'development') {
 
 /** export the app */
 module.exports = app;
+console.log('NodeJS application started...');
