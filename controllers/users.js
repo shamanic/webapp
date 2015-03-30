@@ -2,10 +2,14 @@
  * show the user account page
  */
 exports.myaccount = function(req, res) {
-	res.render('pages/users/account', {
-		title : 'Shamanic: [manage your account]',
-		username: req.session.user.username,
-		status: ''
+	req.db.fetchRow('SELECT fullname FROM users WHERE username = ?', [req.session.user.username], function(err, result) {
+	    if( ! err ) {
+			res.render('pages/users/account', {
+				title : 'Shamanic: [manage your account]',
+				username: req.session.user.username,
+				fullname: result.fullname
+			});		    
+	    }
 	});
 };
 
@@ -66,39 +70,20 @@ exports.update = function(req, res) {
 	/** create user object with the bcrypted password*/
 	var salt = req.bcrypt.genSaltSync(10);
 	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
-	var userObj = {fullname: req.body.fullname, password : hashedPassword};	
 	
-	
-		
-	//req.db.update('user', JohnDataUpdate , [ 'first_name=\'John\'', ['last_name=?', 'Foo'] ], function(err) {});
-    
-	req.db.update('user', userObj , [[ 'uuid=?', req.session.user.uuid]], function(err) {
-		console.log(err);
+	/** update the user information and return a success / fail */
+	var userObj = {fullname: req.body.fullname, password : hashedPassword};
+	req.db.update('users', userObj , [[ 'uuid=?', req.session.user.uuid]], function(err) {
+	    if( ! err ) {
+		    res.render('pages/response', {
+	    	    response : 'User Updated Successfully.'
+	    	});
+	    } else {
+		    res.render('pages/response', {
+	    	    response : 'User information could not be updated.'
+	    	});
+	    }
     } );
-	
-	
-	
-//	
-//	
-//	
-//	req.db.insert('users', userObj , function(err) {
-//	    if( ! err ) {
-//	    	res.render('pages/users/account', {
-//	    		title : 'Shamanic: [manage your account]',
-//	    		username: req.session.user.username,
-//	    		status: 'Your Account has been updated.'
-//	    	});
-//	        return true;
-//	    } else {
-//	    	res.render('pages/users/account', {
-//	    		title : 'Shamanic: [manage your account]',
-//	    		username: req.session.user.username,
-//	    		status: 'An error has occurred, your user account could not be updated.'
-//	    	});
-//	    	return false;
-//	    }
-//	} );
-	
 };
 
 /**

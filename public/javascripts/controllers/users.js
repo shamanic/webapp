@@ -102,8 +102,12 @@ userControllers.controller("signupController", [ '$scope', '$http', function($sc
 /** manage user account controller */
 userControllers.controller("userAccountController", [ '$scope', '$http', function($scope, $http) {
 	
+	/** default values for the user submit form messages */
 	$scope.showAccountForm = false;
 	$scope.showValidationMessages = false;
+	$scope.fullname = window.fullname;
+	$scope.showUpdateMessage= false;
+	$scope.updateMessage = '';
 
 	/** user submit form, show errors if present */
 	$scope.submit = function(isFormValid) {
@@ -115,9 +119,26 @@ userControllers.controller("userAccountController", [ '$scope', '$http', functio
 			$scope.passwordMatch = false;
 			isFormValid = false;
 		}
-		
+				
+		/** if valid form submission then save user data and show success/fail message */
 		if (isFormValid) {
-			document.forms.updateAccountForm.submit();	
+			
+			/** default the user submit form messages */
+			$scope.showUpdateMessage= false;
+			$scope.updateMessage = '';
+			
+			$http({
+				url : '/user/update',
+				method : "POST",
+				data : {
+					fullname : $scope.fullname,
+					password : $scope.password
+				}
+			}).then(function(response) {
+				$scope.showUpdateMessage= true;
+				$scope.updateMessage = response.data;
+				$scope.showAccountForm = false;
+			});
 		}
 	};
 } ]);
