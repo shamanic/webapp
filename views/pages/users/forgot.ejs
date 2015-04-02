@@ -1,0 +1,46 @@
+<% include ../../partials/header %>
+<div class='main-container' ng-controller='forgotController'>
+	<div class="large-3 large-centered columns">
+		<div class="login-box">
+			<div class="row">
+				<div class="large-12 columns">
+					<form id="forgotform" name="forgotform" action="/user/checkForgot" method="post" enctype="application/x-www-form-urlencoded" novalidate>
+						<fieldset>
+							<legend>Recover your account</legend>
+							<div class="row">
+								<div class="large-12 columns">
+									<input type="text" name="username" ng-model="username"  placeholder="Username"/>
+								</div>
+							</div>
+							<div class="row">
+								<div class="large-12 columns" style="padding: 18px; padding-top: 0px;">
+										- OR -
+								</div>
+							</div>
+							<div class="row">
+								<div class="large-12 columns">
+									<input id="email" type="email" name="email" ng-model="email" placeholder="E-mail Address">
+									<span class="error" ng-show="showValidationMessages && forgotform.email.$error.email">You must provide a valid e-mail address</span>
+								</div>
+							</div>							
+							<div class="row">
+								<div class="large-12 large-centered columns">
+									<input type="button" class="button expand" value="Forgot Password"  ng-click='submit(forgotform.$valid)'/>
+									<span class="error" ng-show="showValidationMessages && userNotFound">User not found</span>
+									<div ng-show="passwordReset">Your password has been reset, please check your email.</div>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<ul class="inline-list right">
+					<li><a href="/user/signup">Signup</a></li>
+					<li><a href="/user/forgot">Forgot Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<% include ../../partials/footer %>

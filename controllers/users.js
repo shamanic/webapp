@@ -5,7 +5,7 @@ exports.myaccount = function(req, res) {
 	req.db.fetchRow('SELECT fullname FROM users WHERE username = ?', [req.session.user.username], function(err, result) {
 	    if( ! err ) {
 			res.render('pages/users/account', {
-				title : 'Shamanic: [manage your account]',
+				title : 'Shamanic [Manage Account]',
 				username: req.session.user.username,
 				fullname: result.fullname
 			});		    
@@ -16,9 +16,9 @@ exports.myaccount = function(req, res) {
 /** 
  * show the login page 
  */
-exports.login = function(req, res) {	
+exports.login = function(req, res) {
 	res.render('pages/users/login', {
-		title : 'Shamanic [login]'
+		title : 'Shamanic [Login]'
 	});
 };
 
@@ -33,6 +33,12 @@ exports.checkLogin = function(req, res) {
 		try{
 			if (req.bcrypt.compareSync(req.body.password, result.password)) {
 			    req.session.user = {uuid:result.uuid,username:result.username};
+			    
+			    /** update user last login timestamp */
+			    var lastLogin = new req.db.DBExpr('NOW()');
+                var userObj = {last_login: lastLogin};
+    			req.db.update('users', userObj , [[ 'uuid=?', result.uuid]], function(err) {});
+			    
 			    /** render success message, user found */
 			    res.render('pages/response', {
 		    	    response : 'user login sucessful'
@@ -52,7 +58,7 @@ exports.checkLogin = function(req, res) {
 	    	});		    
 		}
 	} );
-}
+};
 
 /** 
  * logout then redirect to home page 
@@ -60,6 +66,87 @@ exports.checkLogin = function(req, res) {
 exports.logout = function(req, res) {
 	req.session.user = false;
 	res.redirect('/');
+};
+
+/**
+ * forgot password dialog
+ */
+exports.forgot = function(req, res) {
+	res.render('pages/users/forgot', {
+		title : 'Shamanic [Forgot Login]'
+	});
+};
+
+/**
+ * search for user email recovery password  
+ */
+exports.checkForgot = function(req, res) {
+
+	/** search by username, but only if no email else we always search by that */
+	if (req.body.username.length > 0 && req.body.email.length == 0) {
+		req.db.fetchRow('SELECT email FROM users WHERE username = ?', [req.body.username], function(err, result) {
+			try {
+				if (typeof result.email !== 'undefined' && result.email !== null) {
+					/** render success message, and email recovery message */
+					recoverUser(result.email, req.bcrypt, req.db);
+				    res.render('pages/response', {
+					    response : 'user password recovered'
+					});
+				}
+			} catch (err) {
+				/** render error message, user not found */
+				console.log(err);
+			    res.render('pages/response', {
+		    		response : 'not found'
+		    	});
+			}
+		} );	
+	}
+	
+	/** search by email */
+	if (req.body.email.length > 0) {
+		req.db.fetchRow('SELECT email FROM users WHERE email = ?', [req.body.email], function(err, result) {
+			try {
+				if (typeof result.email !== 'undefined' && result.email !== null) {
+					/** render success message, and email recovery message */
+					recoverUser(result.email, req.bcrypt, req.db);
+				    res.render('pages/response', {
+					    response : 'user password recovered'
+					});
+				}
+			} catch (err) {
+				/** render error message, user not found */
+				console.log(err);
+			    res.render('pages/response', {
+		    		response : 'not found'
+		    	});
+			}
+		} );	
+	}
+};
+
+/**  create a temporary password and recover email message for a user */
+var recoverUser = function(email, bcrypt, db) {
+	
+	/** generate random password */
+	var seed = Math.floor(Math.random() * (10000000 - 100000) + 1);
+	var uuid = require('node-uuid');
+	var uuidV1 = uuid.v1();
+	uuidV1 = uuidV1.substring(0, 8)
+	var randomPassword = seed + uuidV1;
+	
+	/** bcrypted password for storage */
+	var salt = bcrypt.genSaltSync(10);
+	var hashedPassword = bcrypt.hashSync(randomPassword, salt);
+	
+	/** update the user to have the random password */
+	var userObj = {password : hashedPassword};
+	db.update('users', userObj , [[ 'email=?', email]], function(err) {
+	    if( ! err ) {
+    		/** send the recovery message */
+    		emailUser(email, "Account recovery - shamanic.io", "This address has been requested for a password reset on Shamanic.io.  \n\nYour account password is now: "+randomPassword+" \n\nIf this action is unfamiliar to you, please let us know.  -Shamanic Team");
+	    } 
+    });
 };
 
 /** 
@@ -91,7 +178,7 @@ exports.update = function(req, res) {
  */
 exports.signup = function(req, res) {
 	res.render('pages/users/signup', {
-		title : 'Shamanic [join us!]'
+		title : 'Shamanic [Join Us!]'
 	});
 };
 
@@ -112,18 +199,21 @@ exports.create = function(req, res) {
 	req.db.insert('users', userObj , function(err) {
 	    if( ! err ) {
 	    	res.render('pages/users/create', {
-	    		title : 'Shamanic [join us!]',
+	    		title : 'Shamanic [Join Us!]',
 	    		status: 'User account has been created.'
 	    	});
 	        return true;
 	    } else {
 	    	res.render('pages/users/create', {
-	    		title : 'Shamanic [join us!]',
+	    		title : 'Shamanic [Join Us!]',
 	    		status: 'An error has occurred, your user account could not be created.'
 	    	});
 	    	return false;
 	    }
 	} );
+	
+	/** send the thank you for signing up email */
+	emailUser(req.body.email, "Thank you for registering your account on Shamanic.io!", "This address has been used to create an account on Shamanic.io.  \n\nIf this action is unfamiliar to you, please let us know.  -Shamanic Team");
 };
 
 /** 
@@ -131,7 +221,7 @@ exports.create = function(req, res) {
  */
 exports.checkExistingUserValues = function(req, res) {
 	
-	/** @todo have this query escaped safely */
+	/** @todo have this query escaped safely from SQL injection attempts */
 	req.db.fetchRow('SELECT * FROM users WHERE '+req.body.property+'=\''+req.body.value+'\'', function(err, result) {
 		var existingUserValue = 'value exists';
 	    if( ! result ) {
@@ -142,4 +232,26 @@ exports.checkExistingUserValues = function(req, res) {
     		response : existingUserValue
     	});
 	} );
+};
+
+/**
+ * email user text based email with subject and message
+ */
+var emailUser = function(address, subject, message) {
+	var AppSettings = require('../settings/settings.js');
+	var email = require("../node_modules/emailjs/email");
+	var server = email.server.connect({
+		user : AppSettings.SMTPConfig.fromAddress,
+		password : AppSettings.SMTPConfig.sendMailPassword,
+		host : AppSettings.SMTPConfig.mailHost,
+		ssl : true
+	});
+	server.send({
+		from : AppSettings.SMTPConfig.fromAddress + " <"+AppSettings.SMTPConfig.fromAddress+">",
+		to : address,
+		subject : subject,
+		text : message,
+	}, function(err, message) {
+		console.log(err || message);
+	});
 };

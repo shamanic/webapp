@@ -113,6 +113,10 @@ app.get('/user/signup', users.signup);
 app.post('/user/create', users.create);
 app.post('/user/checkExistingValue', users.checkExistingUserValues);
 
+/** forgot login */
+app.get('/user/forgot', users.forgot);
+app.post('/user/checkForgot', users.checkForgot);
+
 /**************************************************************
  *  ERROR HANDLERS
  **************************************************************/

@@ -6,17 +6,18 @@
     "start": "nodejs ./bin/www"
   },
   "dependencies": {
-	"bcrypt": "0.8.1",
-	"body-parser": "1.0.2",
-	"client-sessions": "0.7.0",
-	"cookie-parser": "1.0.1",
-	"debug": "0.7.4",
-	"ejs": "2.2.4",
-	"express": "4.0.0",
-	"morgan": "1.0.1",
-	"node-dbi": "0.7.1",
-	"node-uuid": "1.4.3",
-	"pg": "4.2.0",
-	"static-favicon": "1.0.2"
+		"bcrypt": "0.8.1",
+		"body-parser": "1.0.2",
+		"client-sessions": "0.7.0",
+		"cookie-parser": "1.0.1",
+		"debug": "0.7.4",
+		"emailjs": "0.3.13",
+		"ejs": "2.2.4",
+		"express": "4.0.0",
+		"morgan": "1.0.1",
+		"node-dbi": "0.7.1",
+		"node-uuid": "1.4.3",
+		"pg": "4.2.0",
+		"static-favicon": "1.0.2"
   }
 }

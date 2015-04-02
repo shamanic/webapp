@@ -142,3 +142,43 @@ userControllers.controller("userAccountController", [ '$scope', '$http', functio
 		}
 	};
 } ]);
+
+/** forgot controller */
+userControllers.controller("forgotController", [ '$scope', '$http', function($scope, $http) {
+	
+	/** setup the default form validation values */
+	$scope.showValidationMessages = false;
+	$scope.userNotFound = false;
+	$scope.passwordReset = false;
+	
+	/** user submit form, show errors if present */
+	$scope.submit = function(isFormValid) {
+		
+		$scope.showValidationMessages = true;
+		$scope.userNotFound = false;
+
+		/** if they didn't put anything in the fields, then we're not found */
+		if ((typeof($scope.username) == 'undefined' || $scope.username == '') && (typeof($scope.email) == 'undefined' || $scope.email == '')) {
+			$scope.userNotFound = true;	
+			isFormValid = false;
+		}
+		
+		/** if valid form, check if the user account exists for given email or username */
+		if (isFormValid) {
+		    $http({
+			    url : '/user/checkForgot',
+			    method : "POST",
+			    data : {
+				    'username' : $scope.username,
+				    'email' : $scope.email
+			    }
+		    }).then(function(response) {
+		    	if (response.data == 'user password recovered') {
+		    		$scope.passwordReset = true;
+		    	} else {
+		    		$scope.userNotFound = true;
+		    	}
+		    });
+		}
+	};
+} ]);
