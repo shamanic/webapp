@@ -1,9 +1,5 @@
- <% include ./partials/header %>
-<div class='main-container'>
-	<h1><%= error.status %></h1>
-	<p><%= message %></p>
-	<pre>
-		 	<%= error.stack %>
-	</pre>
-</div>
-<% include ./partials/footer %>
+<h1><%= error.status %></h1>
+<p><%= message %></p>
+<pre>
+	<%= error.stack %>
+</pre>
