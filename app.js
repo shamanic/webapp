@@ -49,6 +49,16 @@ app.use(session({
 	  ephemeral: true
 	}));
 
+/** setting a property will automatically cause a Set-Cookie response to be sent */
+app.use(function(req, res, next) {
+  if (req.mySession.seenyou) {
+    res.setHeader('X-Seen-You', 'true');
+  } else {
+    req.mySession.seenyou = true;
+    res.setHeader('X-Seen-You', 'false');
+  }
+});
+
 /** make our db and application models and other global libraries accessible to our router */
 var dbi = require('./db/config');
 dbi.dbWrapper.connect();
