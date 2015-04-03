@@ -41,6 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /** configure the client-sessions options */
 app.use(session({
 	  cookieName: 'shamanic_session',
+	  requestKey: 'forcedSessionKey',
 	  secret: '|Wj#1Kj&l1MQ*I!"19MbIQ4,[!d0DG',
 	  duration: 86400000,
 	  activeDuration: 86400000,
@@ -49,15 +50,13 @@ app.use(session({
 	  ephemeral: true
 	}));
 
-/** setting a property will automatically cause a Set-Cookie response to be sent */
+/** requestKey forces the session information to be accessed via forcedSessionKey */
 app.use(function(req, res, next) {
-  if (req.mySession.seenyou) {
-    res.setHeader('X-Seen-You', 'true');
-  } else {
-    req.mySession.seenyou = true;
-    res.setHeader('X-Seen-You', 'false');
-  }
-});
+	  if (req.forcedSessionKey.seenyou) {
+	    res.setHeader('X-Seen-You', 'true');
+	  }
+	  next();
+	});
 
 /** make our db and application models and other global libraries accessible to our router */
 var dbi = require('./db/config');
