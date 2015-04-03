@@ -1,0 +1,41 @@
+<% include ../../partials/header %>
+<div class='main-container' ng-controller='loginController'>
+	<div class="large-3 large-centered columns">
+		<div class="login-box">
+			<div class="row">
+				<div class="large-12 columns">
+					<form id="loginform" name="loginform" action="/user/checkLogin" method="post" enctype="application/x-www-form-urlencoded" novalidate>
+						<fieldset>
+							<legend>Please sign in below</legend>
+							<div class="row">
+								<div class="large-12 columns">
+									<input type="text" name="username" ng-model="username"  placeholder="Username" required/>
+									<span class="error" ng-show="showValidationMessages && loginform.username.$error.required">Required</span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="large-12 columns">
+									<input type="password" name="password" ng-model="password" placeholder="Password"  required/>
+									<span class="error" ng-show="showValidationMessages && loginform.password.$error.required">Required</span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="large-12 large-centered columns">
+									<input type="button" class="button expand" value="Log In"  ng-click='submit(loginform.$valid)'/>
+									<span class="error" ng-show="showValidationMessages && userNotFound">User not found</span>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<ul class="inline-list right">
+					<li><a href="/user/signup">Signup</a></li>
+					<li><a href="/user/forgot">Forgot Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<% include ../../partials/footer %>

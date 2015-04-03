@@ -1,0 +1,36 @@
+<% include ../../partials/header %>
+<div class='main-container' ng-controller='signupController'>
+	<div class="row">
+		<div class="six columns">
+			<form class="custom" id="signupform" name="signupform" action="/user/create" method="post" enctype="application/x-www-form-urlencoded" novalidate>			
+				<fieldset>
+					<legend>Enter your information to play</legend>
+					<input id="fullname" type="text" name="fullname" ng-model="fullname" placeholder="Full Name" required>
+					<span class="error" ng-show="showValidationMessages && signupform.fullname.$error.required">Please provide your full name</span>
+					<input id="email" type="email" name="email" ng-model="email" placeholder="E-mail Address" required>
+					<span class="error" ng-show="showValidationMessages && (signupform.email.$error.required || signupform.email.$error.email)">You must provide a valid e-mail address</span>
+					<span class="error" ng-show="showValidationMessages && showEmailTakenError">E-mail is already in use</span>
+					<input id="username" type="text" name="username" ng-model="username" placeholder="User Name" required ng-minlength="5">
+					<span class="error"  ng-show="showValidationMessages && (signupform.username.$error.required || signupform.username.$error.minlength)">Provide a minimum 4 characters user name</span>
+					<span class="error"  ng-show="showValidationMessages && showUserTakenError">Username has already been chosen</span>
+					<input id="password" type="password" name="password" ng-model="password" placeholder="Password" ng-minlength="5" required>
+					<span class="error"  ng-show="showValidationMessages && (signupform.password.$error.required || signupform.password.$error.minlength)">Enter a password of at least 5 characters</span>
+					<input id="confirm" type="password" name="confirm" ng-model="confirm" placeholder="Confirm Password" ng-minlength="5" required>
+					<span class="error"  ng-show="showValidationMessages && (signupform.confirm.$error.required || !passwordMatch)">Enter a matching password</span>
+				</fieldset>
+				<div class="row">
+					<div class="large-6 large-centered columns">
+						<input type="button" class="button expand" value="Join Us"  ng-click='submit(signupform.$valid)'/>
+					</div>
+				</div>
+			</form>
+			<div class="row">
+				<ul class="inline-list right">
+					<li><a href="/user/login">Login</a></li>
+					<li><a href="/user/forgot">Forgot Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<% include ../../partials/footer %>
