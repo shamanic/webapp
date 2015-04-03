@@ -16,5 +16,6 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE users
-  OWNER TO shamanic_user;
-GRANT ALL ON TABLE users TO shamanic_user;
+  OWNER TO kughvnfekebcsd;
+  
+GRANT ALL ON TABLE users TO kughvnfekebcsd;

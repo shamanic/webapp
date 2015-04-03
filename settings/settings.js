@@ -1,10 +1,10 @@
 /** postgres DB */
 exports.DBConfig = {
 	db : {
-		host : "localhost",
-		username : "shamanic_user",
-		password : "password",
-		database : "shamanic"
+		host : "ec2-54-163-225-41.compute-1.amazonaws.com",
+		username : "kughvnfekebcsd",
+		password : "7jV0LkjZYFJ2_zkwibQ60RQz_O",
+		database : "ddeq1i2njbosnl"
 	}
 }
 
