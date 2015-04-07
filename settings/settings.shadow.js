@@ -14,11 +14,17 @@ exports.DBConfig = {
 		password : "password here",
 		database : "shamanic"
 	}
-}
+};
 
 /** SMTP config, send admin emails to users */
 exports.SMTPConfig = {
 	mailHost : 'mail.privateemail.com',
 	fromAddress : 'admin@shamanic.io',
 	sendMailPassword : 'mail host password here'
-}
+};
+
+/** cookie session keys */
+exports.sessionKeys = {
+		cookieParserKey : 'secret string value here',
+		sessionKey: 'another secret string value here'
+};
