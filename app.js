@@ -22,8 +22,8 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('client-sessions');
 var bcrypt = require('bcrypt');
+var session = require('cookie-session');
 
 /** view engine setup */
 var app = express();
@@ -38,25 +38,10 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-/** configure the client-sessions options */
-app.use(session({
-	  cookieName: 'shamanic_session',
-	  requestKey: 'forcedSessionKey',
-	  secret: '|Wj#1Kj&l1MQ*I!"19MbIQ4,[!d0DG',
-	  duration: 86400000,
-	  activeDuration: 86400000,
-	  httpOnly: true,
-	  secure: false,
-	  ephemeral: true
-	}));
-
-/** requestKey forces the session information to be accessed via forcedSessionKey */
-app.use(function(req, res, next) {
-	  if (req.forcedSessionKey.seenyou) {
-	    res.setHeader('X-Seen-You', 'true');
-	  }
-	  next();
-	});
+/** cookie parsing sessions, create with application settings keys */
+var AppSettings = require('./settings/settings.js');
+app.use(cookieParser(AppSettings.sessionKeys.cookieParserKey));
+app.use(session({secret: AppSettings.sessionKeys.sessionKey}));
 
 /** make our db and application models and other global libraries accessible to our router */
 var dbi = require('./db/config');
@@ -65,7 +50,6 @@ app.use(function(req,res,next){
     req.db = dbi.dbWrapper;
     req.db.DBExpr = require('node-dbi').DBExpr; 
     req.bcrypt = bcrypt;
-    req.session = session;
     next();
 });
 

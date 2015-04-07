@@ -6,3 +6,15 @@
 #main-title-link {
 	color: #FFFFFF;
 }
+a {
+	color: #000000;
+}
+a:hover {
+	color: #666666;
+}
+.button {
+	background-color: #000000;
+}
+.button:hover {
+	background-color: #555555;
+}

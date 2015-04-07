@@ -64,7 +64,7 @@ exports.checkLogin = function(req, res) {
  * logout then redirect to home page 
  */
 exports.logout = function(req, res) {
-	req.session.user = false;
+	req.session = null;
 	res.redirect('/');
 };
 
