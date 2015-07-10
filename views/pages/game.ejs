@@ -1,14 +1,21 @@
 <% include ../partials/header %>
 <div class='main-container' ng-controller='gameController'>
-	Game plays here
-	<p>{{objects.one}}</p>
-	<p>{{objects.two}}</p>
+	
+	
+	<p>{{data.objects.one}}</p>
+	<p>{{data.objects.two}}</p>
+	
+	
 	<div class='sigils'>
 		<img ng-src='{{image.url}}'
 			ng-repeat='image in images'
 			ng-click='openSigilPage(index)'
 			ng-show='nowShowing==$index' />
 	</div>
-	<div sigil-Gallery="" images="imageList"></div>
+	
+	<sigil-gallery images="imageList"></sigil-gallery>
+	
+	<d3-map data="data.objects"></d3-map>
+	
 </div>
 <% include ../partials/footer %>

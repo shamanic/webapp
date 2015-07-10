@@ -1,12 +1,7 @@
-var gameDirectives = angular.module('gameDirectives'),
-scripts = document.getElementsByTagName("script"),
-currentScriptPath = scripts[scripts.length-1].src;
-
-
-gameDirectives.directive('sigilGallery', function($interval, $window) {
+shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 	return {
-		restrict: 'A',
-		templateUrl: currentScriptPath.replace('gameDirectives.js', 'sigilPartial.html'),
+		restrict: 'E',
+		templateUrl: 'javascripts/views/sigilPartial.html',
 		scope: {
 			images: '='
 		},
@@ -28,25 +23,16 @@ gameDirectives.directive('sigilGallery', function($interval, $window) {
 		}
 	};
 })
-.directive('testDirective', [ function() {
-	return {
-		restrict: 'E',
-		replace:'true',
-		template: '<p>Hello from Test Directive</p>'
-	}
-}])
-
 .directive('d3Map', function() {
   return {
-    restrict: 'A',
-    templateUrl: currentScriptPath.replace('gameDirectives.js', 'mapPartial.html'),
+    restrict: 'E',
+	templateUrl: 'javascripts/views/mapPartial.html',
     scope: {
       data: '='
     },
     link: function(scope, element, attributes) {
 
-      var width = 600,
-        height = 400;
+      var width = 600, height = 400;
 
       var svg = d3.select("body").append("svg")
         .attr("width", width)
@@ -67,6 +53,9 @@ gameDirectives.directive('sigilGallery', function($interval, $window) {
 
       var path = d3.geo.path().projection(projection);
   
+      console.log(scope.data);
+      
+      
       svg.append("path")
         .datum(topojson.feature(scope.data, scope.data.objects.subunits))
         //.transition()
@@ -94,10 +83,8 @@ gameDirectives.directive('sigilGallery', function($interval, $window) {
         function updateGradient() {
 
           if ($ === undefined) {
-			console.log('jQuery is undefined, buddy!');
 			return;
 		  }
-		  console.log('jQuery located');
 
           var c0_0 = colors[colorIndices[0]];
           var c0_1 = colors[colorIndices[1]];
@@ -127,18 +114,13 @@ gameDirectives.directive('sigilGallery', function($interval, $window) {
             colorIndices[0] = colorIndices[1];
             colorIndices[2] = colorIndices[3];
 
-            //pick two new target color indices
-            //do not pick the same as the current one
+            // pick two new target color indices, do not pick the same as the current one
             colorIndices[1] = (colorIndices[1] + Math.floor(1 + Math.random() * (colors.length - 1))) % colors.length;
             colorIndices[3] = (colorIndices[3] + Math.floor(1 + Math.random() * (colors.length - 1))) % colors.length;
-
           }
         }
-
         setInterval(updateGradient, 10);
-
       };
-
       function transition(path) {
         path.transition()
           .duration(7500)
@@ -147,7 +129,6 @@ gameDirectives.directive('sigilGallery', function($interval, $window) {
             d3.select(this).call(transition);
           });
       }
-
       function tweenDash() {
         var l = this.getTotalLength(),
           i = d3.interpolateString("0," + l, l + "," + l);
