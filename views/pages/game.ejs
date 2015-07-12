@@ -1,21 +1,8 @@
 <% include ../partials/header %>
+
 <div class='main-container' ng-controller='gameController'>
-	
-	
-	<p>{{data.objects.one}}</p>
-	<p>{{data.objects.two}}</p>
-	
-	
-	<div class='sigils'>
-		<img ng-src='{{image.url}}'
-			ng-repeat='image in images'
-			ng-click='openSigilPage(index)'
-			ng-show='nowShowing==$index' />
-	</div>
-	
-	<sigil-gallery images="imageList"></sigil-gallery>
-	
-	<d3-map data="data.objects"></d3-map>
-	
+	   <sigil-gallery images="imageList" ng-show="showSigils"></sigil-gallery>
+	   <d3-Map data="mapData"></d3-Map>
+	   <button id="getSigils" ng-click="showSigils = !showSigils">Get Sigils</button>
 </div>
 <% include ../partials/footer %>

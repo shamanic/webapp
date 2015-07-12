@@ -3,11 +3,11 @@
  * 
  * @author khinds (c) shamanic.io, http://www.shamanic.io
  */
-var gameController = angular.module("gameController", []);
+var gameController = angular.module("gameController", ['sigilService']);
 
-gameController.controller("gameController", [ '$scope', '$http', function($scope, $http) {
+gameController.controller("gameController", [ '$scope', 'sigilService', function($scope, sigilService) {
 	
-	$scope.data = {};
+	//$scope.mapData = {};
 	$scope.sigilList = [];	
 	
 	$scope.imageList = [
@@ -20,19 +20,9 @@ gameController.controller("gameController", [ '$scope', '$http', function($scope
 			name: 'sigilTwo'
 		}
 	];
-	
-	$scope.data.objects = {
-		one: "testObject",
-		two: "anotherObject"
-	};
-
-	/** populate sigils */
-	$http({
-		method: 'GET',
-		url: '/sigils'
-	}).success(function(data, status, headers, config) {
-		$scope.sigilList = data;
-	}).error(function(data, status, headers, config) {
-		console.log('http get sigils failed. status: ' + status);
+	sigilService.success(function(data) {
+	  console.log('controller succeeded in getting map data');
+	  $scope.mapData = data;
+	  console.log('mapData from controller: ', $scope.mapData);
 	});
 } ]);

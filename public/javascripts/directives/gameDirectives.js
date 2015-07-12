@@ -7,7 +7,6 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 		},
 		link: function(scope, element, attributes) {
 			scope.nowShowing = 0;
-			console.log(scope.nowShowing);
 			$interval(function showNext() {
 				if(scope.nowShowing != scope.images.length - 1) {
 					scope.nowShowing++;
@@ -19,7 +18,7 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 		scope.openSigilPage = function(index) {
 			$window.open(scope.images[index].url);
 		};
-		scope.$apply();
+		//scope.$apply();
 		}
 	};
 })
@@ -34,7 +33,7 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 
       var width = 600, height = 400;
 
-      var svg = d3.select("body").append("svg")
+      var svg = d3.select(".main-container").append("svg")
         .attr("width", width)
         .attr("height", height);
 
@@ -53,9 +52,8 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 
       var path = d3.geo.path().projection(projection);
   
-      console.log(scope.data);
-      
-      
+      console.log('data from mapDirective: ', scope.data);
+	  
       svg.append("path")
         .datum(topojson.feature(scope.data, scope.data.objects.subunits))
         //.transition()
@@ -136,6 +134,7 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
           return i(t);
         };
       }
+
     }
   }
 });
