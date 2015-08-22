@@ -14,8 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var menuControllers = angular.module("menuControllers", []);
 
-menuControllers.controller("menuController", [ '$scope', '$http', function($scope, $http) {
-	console.log('menu js here');
-} ]);
+/** generic website configuration for naming and referencing your site */
+exports.websiteConfig = {
+		websiteURL : 'http://shamanic-io.herokuapp.com/',
+		websiteName: 'Shamanic',
+		websiteEmailFromName: 'Shamanic.io Webmaster'
+};

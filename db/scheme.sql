@@ -18,3 +18,18 @@ WITH (
 ALTER TABLE users
   OWNER TO shamanic_user;
 GRANT ALL ON TABLE users TO shamanic_user;
+
+
+CREATE TABLE user_locations
+(
+  uuid uuid,
+  created_on timestamp without time zone NOT NULL,
+  latitude float8,
+  longitude float8
+) 
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE users
+  OWNER TO website_db_user;
+GRANT ALL ON TABLE user_locations TO shamanic_user;

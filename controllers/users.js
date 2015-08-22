@@ -1,11 +1,30 @@
 /**
+ * Shamanic Web Application
+ * @copyright 2015 Shamanic
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *	http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+/**
  * show the user account page
  */
 exports.myaccount = function(req, res) {
+	var SiteEnvironment = require('../settings/environment.js');
 	req.db.fetchRow('SELECT fullname FROM users WHERE username = ?', [req.session.user.username], function(err, result) {
 	    if( ! err ) {
 			res.render('pages/users/account', {
-				title : 'Shamanic [Manage Account]',
+				title : SiteEnvironment.websiteConfig.websiteName + ' [Manage Account]',
+				websiteName: SiteEnvironment.websiteConfig.websiteName,
 				username: req.session.user.username,
 				fullname: result.fullname
 			});		    
@@ -17,8 +36,10 @@ exports.myaccount = function(req, res) {
  * show the login page 
  */
 exports.login = function(req, res) {
+	var SiteEnvironment = require('../settings/environment.js');
 	res.render('pages/users/login', {
-		title : 'Shamanic [Login]'
+		title : SiteEnvironment.websiteConfig.websiteName + ' [login]',
+		websiteName: SiteEnvironment.websiteConfig.websiteName
 	});
 };
 
@@ -72,8 +93,10 @@ exports.logout = function(req, res) {
  * forgot password dialog
  */
 exports.forgot = function(req, res) {
+	var SiteEnvironment = require('../settings/environment.js');
 	res.render('pages/users/forgot', {
-		title : 'Shamanic [Forgot Login]'
+		title : SiteEnvironment.websiteConfig.websiteName + ' [Forgot Login]',
+		websiteName: SiteEnvironment.websiteConfig.websiteName
 	});
 };
 
@@ -128,6 +151,9 @@ exports.checkForgot = function(req, res) {
 /**  create a temporary password and recover email message for a user */
 var recoverUser = function(email, bcrypt, db) {
 	
+	/** get website environment settings */
+	var SiteEnvironment = require('../settings/environment.js');
+	
 	/** generate random password */
 	var seed = Math.floor(Math.random() * (10000000 - 100000) + 1);
 	var uuid = require('node-uuid');
@@ -144,7 +170,7 @@ var recoverUser = function(email, bcrypt, db) {
 	db.update('users', userObj , [[ 'email=?', email]], function(err) {
 	    if( ! err ) {
     		/** send the recovery message */
-    		emailUser(email, "Account recovery - shamanic.io", "This address has been requested for a password reset on Shamanic.io.  \n\nYour account password is now: "+randomPassword+" \n\nIf this action is unfamiliar to you, please let us know.  -Shamanic Team");
+    		emailUser(email, "Account recovery - " + SiteEnvironment.websiteConfig.websiteName, "This address has been requested for a password reset on " + SiteEnvironment.websiteConfig.websiteName + ".  \n\nYour account password is now: "+randomPassword+" \n\nIf this action is unfamiliar to you, please let us know.  -" + SiteEnvironment.websiteConfig.websiteEmailFromName);
 	    } 
     });
 };
@@ -177,8 +203,10 @@ exports.update = function(req, res) {
  * user signup page
  */
 exports.signup = function(req, res) {
+	var SiteEnvironment = require('../settings/environment.js');
 	res.render('pages/users/signup', {
-		title : 'Shamanic [Join Us!]'
+		title : SiteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
+		websiteName: SiteEnvironment.websiteConfig.websiteName
 	});
 };
 
@@ -186,6 +214,9 @@ exports.signup = function(req, res) {
  * create user here 
  */
 exports.create = function(req, res) {
+	
+	/** get website environment settings */
+	var SiteEnvironment = require('../settings/environment.js');
 	
 	/** create user object with the bcrypted password*/
 	var salt = req.bcrypt.genSaltSync(10);
@@ -199,13 +230,15 @@ exports.create = function(req, res) {
 	req.db.insert('users', userObj , function(err) {
 	    if( ! err ) {
 	    	res.render('pages/users/create', {
-	    		title : 'Shamanic [Join Us!]',
+	    		title : SiteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
+	    		websiteName: SiteEnvironment.websiteConfig.websiteName,
 	    		status: 'User account has been created.'
 	    	});
 	        return true;
 	    } else {
 	    	res.render('pages/users/create', {
-	    		title : 'Shamanic [Join Us!]',
+	    		title : SiteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
+	    		websiteName: SiteEnvironment.websiteConfig.websiteName,
 	    		status: 'An error has occurred, your user account could not be created.'
 	    	});
 	    	return false;
@@ -213,7 +246,7 @@ exports.create = function(req, res) {
 	} );
 	
 	/** send the thank you for signing up email */
-	emailUser(req.body.email, "Thank you for registering your account on Shamanic.io!", "This address has been used to create an account on Shamanic.io.  \n\nIf this action is unfamiliar to you, please let us know.  -Shamanic Team");
+	emailUser(req.body.email, "Thank you for registering your account on "+ SiteEnvironment.websiteConfig.websiteName + "!", "This address has been used to create an account on "+ SiteEnvironment.websiteConfig.websiteName + ".  \n\nIf this action is unfamiliar to you, please let us know.  -" + SiteEnvironment.websiteConfig.websiteEmailFromName);
 };
 
 /** 
@@ -239,6 +272,7 @@ exports.checkExistingUserValues = function(req, res) {
  */
 var emailUser = function(address, subject, message) {
 	var AppSettings = require('../settings/settings.js');
+	var SiteEnvironment = require('../settings/environment.js');
 	var email = require("../node_modules/emailjs/email");
 	var server = email.server.connect({
 		user : AppSettings.SMTPConfig.fromAddress,
@@ -247,7 +281,7 @@ var emailUser = function(address, subject, message) {
 		ssl : true
 	});
 	server.send({
-		from : AppSettings.SMTPConfig.fromAddress + " <"+AppSettings.SMTPConfig.fromAddress+">",
+		from : SiteEnvironment.websiteConfig.websiteEmailFromName + " <"+AppSettings.SMTPConfig.fromAddress+">",
 		to : address,
 		subject : subject,
 		text : message,
