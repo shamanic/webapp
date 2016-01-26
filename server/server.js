@@ -144,6 +144,6 @@ if (server.get('env') === 'development') {
     });
 }
 
-// export the app
+// export the server
 module.exports = server;
 console.log('NodeJS application started...');
