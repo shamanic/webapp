@@ -22,14 +22,16 @@ GRANT ALL ON TABLE users TO shamanic_user;
 
 CREATE TABLE user_locations
 (
-  uuid uuid,
+  location_id uuid,
   created_on timestamp without time zone NOT NULL,
+  longitude float8,
   latitude float8,
-  longitude float8
-) 
+  elevation float8,
+  CONSTRAINT user_locations_pkey PRIMARY KEY (location_id)
+)
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE users
+ALTER TABLE user_locations
   OWNER TO website_db_user;
 GRANT ALL ON TABLE user_locations TO shamanic_user;

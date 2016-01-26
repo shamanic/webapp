@@ -55,7 +55,7 @@ server.use(function(req,res,next){
     next();
 });
 
-// generic require logged in user checking for any routes that may require it 
+// generic require logged in user checking for any routes that may require it
 function requireLogin (req, res, next) {
   if (!req.session.user) {
     res.redirect('/user/login');
@@ -86,7 +86,7 @@ server.get('/', site.index);
 // PLAY GAME //
 server.get('/game', requireLogin, game.index);
 server.get('/threejs', game.threejs);
-server.get('/sigils', game.getSigils);
+server.get('/game/sigils', game.getSigils);
 
 // USERS //
 // login / logout
