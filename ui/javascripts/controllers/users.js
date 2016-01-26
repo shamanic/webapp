@@ -16,18 +16,18 @@
  */
 var userControllers = angular.module("userControllers", []);
 
-/** login controller */
+// login controller
 userControllers.controller("loginController", [ '$scope', '$http', function($scope, $http) {
 	
-	/** setup the default form validation values */
+	// setup the default form validation values
 	$scope.showValidationMessages = false;
 	$scope.userNotFound = false;
 	
-	/** user submit form, show errors if present */
+	// user submit form, show errors if present
 	$scope.submit = function(isFormValid) {		
 		$scope.showValidationMessages = true;
 
-		/** if valid form, check if the user account exists for given password */
+		// if valid form, check if the user account exists for given password
 		if (isFormValid) {
 		    $http({
 			    url : '/user/checkLogin',
@@ -38,7 +38,7 @@ userControllers.controller("loginController", [ '$scope', '$http', function($sco
 			    }
 		    }).then(function(response) {
 			
-			    /** if no user then show the user not found message, else we go to account page */
+			    // if no user then show the user not found message, else we go to account page
 			    $scope.userNotFound = false;
 			    if (response.data != "user login sucessful") {
 				    $scope.userNotFound = true;
@@ -52,26 +52,26 @@ userControllers.controller("loginController", [ '$scope', '$http', function($sco
 	};
 } ]);
 
-/** signup controller */
+// signup controller
 userControllers.controller("signupController", [ '$scope', '$http', function($scope, $http) {
 	
-	/** setup the default form validation values */
+	// setup the default form validation values
 	$scope.showValidationMessages = false;
 	$scope.passwordMatch = true;
 
-	/** user submit form, show errors if present */
+	// user submit form, show errors if present
 	$scope.submit = function(isFormValid) {
 
 		$scope.showValidationMessages = true;
 
-		/** make sure the passwords match */
+		// make sure the passwords match
 		$scope.passwordMatch = true;
 		if ($scope.password != $scope.confirm) {
 			$scope.passwordMatch = false;
 			isFormValid = false;
 		}
 
-		/** if valid form, now we have to check for unique user names and email addresses */
+		// if valid form, now we have to check for unique user names and email addresses
 		if (isFormValid) {
 			$scope.showEmailTakenError = false;
 			$scope.showUserTakenError = false;
@@ -97,7 +97,7 @@ userControllers.controller("signupController", [ '$scope', '$http', function($sc
 						isFormValid = false;
 					}
 
-					/** submit the create user form after the 2nd validation has finished */
+					// submit the create user form after the 2nd validation has finished
 					if (key == 'username' && isFormValid) {
 						document.forms.signupform.submit();
 					}
@@ -110,31 +110,31 @@ userControllers.controller("signupController", [ '$scope', '$http', function($sc
 	};
 } ]);
 
-/** manage user account controller */
+// manage user account controller
 userControllers.controller("userAccountController", [ '$scope', '$http', function($scope, $http) {
 	
-	/** default values for the user submit form messages */
+	// default values for the user submit form messages
 	$scope.showAccountForm = false;
 	$scope.showValidationMessages = false;
 	$scope.fullname = window.fullname;
 	$scope.showUpdateMessage= false;
 	$scope.updateMessage = '';
 
-	/** user submit form, show errors if present */
+	// user submit form, show errors if present
 	$scope.submit = function(isFormValid) {
 		$scope.showValidationMessages = true;
 		
-		/** make sure the passwords match */
+		// make sure the passwords match
 		$scope.passwordMatch = true;
 		if ($scope.password != $scope.confirm) {
 			$scope.passwordMatch = false;
 			isFormValid = false;
 		}
 				
-		/** if valid form submission then save user data and show success/fail message */
+		// if valid form submission then save user data and show success/fail message
 		if (isFormValid) {
 			
-			/** default the user submit form messages */
+			// default the user submit form messages
 			$scope.showUpdateMessage= false;
 			$scope.updateMessage = '';
 			
@@ -154,27 +154,27 @@ userControllers.controller("userAccountController", [ '$scope', '$http', functio
 	};
 } ]);
 
-/** forgot controller */
+// forgot controller
 userControllers.controller("forgotController", [ '$scope', '$http', function($scope, $http) {
 	
-	/** setup the default form validation values */
+	// setup the default form validation values
 	$scope.showValidationMessages = false;
 	$scope.userNotFound = false;
 	$scope.passwordReset = false;
 	
-	/** user submit form, show errors if present */
+	// user submit form, show errors if present
 	$scope.submit = function(isFormValid) {
 		
 		$scope.showValidationMessages = true;
 		$scope.userNotFound = false;
 
-		/** if they didn't put anything in the fields, then we're not found */
+		// if they didn't put anything in the fields, then we're not found
 		if ((typeof($scope.username) == 'undefined' || $scope.username == '') && (typeof($scope.email) == 'undefined' || $scope.email == '')) {
 			$scope.userNotFound = true;	
 			isFormValid = false;
 		}
 		
-		/** if valid form, check if the user account exists for given email or username */
+		// if valid form, check if the user account exists for given email or username
 		if (isFormValid) {
 		    $http({
 			    url : '/user/checkForgot',

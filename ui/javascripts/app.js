@@ -16,7 +16,7 @@
  */
 var shamanicWebApp = angular.module('shamanicWebApp', [ 'mm.foundation', 'indexController', 'userControllers', 'gameController', 'menuControllers']);
 
-/** Intercept POST requests, convert to standard form encoding */
+// Intercept POST requests, convert to standard form encoding
 shamanicWebApp.config([ '$httpProvider', function($httpProvider) {
     $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
     $httpProvider.defaults.transformRequest.unshift(function(data, headersGetter) {

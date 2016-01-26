@@ -1,5 +1,4 @@
 #!/bin/bash -e
-
 echo "Welcome to the bootstrap script."
 echo "You are here:"
 pwd
@@ -12,12 +11,11 @@ echo ~
 cd /path/to/shamanic/webapp
 pwd
 
-APP_DB_USER=$(grep $'\t\tusername : ' settings/settings.js | awk -F\" '{print $2;}')
-
-APP_DB_PASS=$(grep $'\t\tpassword : ' settings/settings.js | awk -F\" '{print $2;}')
+APP_DB_USER=$(grep $'\t\tusername : ' ../settings.js | awk -F\" '{print $2;}')
+APP_DB_PASS=$(grep $'\t\tpassword : ' ../settings.js | awk -F\" '{print $2;}')
 
 # Edit the following to change the name of the database that is created (defaults to the user name)
-APP_DB_NAME=$(grep $'\t\tdatabase : ' settings/settings.js | awk -F\" '{print $2;}')
+APP_DB_NAME=$(grep $'\t\tdatabase : ' ../settings.js | awk -F\" '{print $2;}')
 
 # Edit the following to change the version of PostgreSQL that is installed
 PG_VERSION=9.4
@@ -29,9 +27,9 @@ PG_VERSION=9.4
 apt-get update > /dev/null
 apt-get -y upgrade > /dev/null
 
-#if [ -z "$APP_DB_USER"] then
-#  echo "There was a problem reading your settings file, please check that it's formatted correctly."
-#fi
+if [ -z "$APP_DB_USER"] then
+  echo "There was a problem reading your settings file, please check that it's formatted correctly."
+fi
 
 ###########################################################
 # Changes below this line are probably not necessary
@@ -99,7 +97,6 @@ PG_PASS="$HOME/.pgpass"
 sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" "$PG_CONF"
 # TODO: Also, Edit postgresql.conf to change the default port to 15432 instead of 5432
 
-
 # Append to pg_hba.conf to add password auth:
 echo "host    all             all             all                     md5" >> "$PG_HBA"
 
@@ -162,7 +159,6 @@ ALTER TABLE user_locations
   OWNER TO $APP_DB_USER;
 GRANT ALL ON TABLE user_locations TO $APP_DB_USER;
 
-
 EOF
 
 # Tag the provision time:
@@ -171,7 +167,6 @@ date > "$PROVISIONED_ON"
 echo "Successfully created PostgreSQL dev virtual machine."
 echo ""
 print_db_usage
-
 
 #apt-get update
 sudo apt-get -y install g++ > /dev/null
@@ -184,8 +179,7 @@ ln -s /home/vagrant/node_modules/ node_modules
 npm install > /dev/null
 cd ../node_modules
 npm install bcrypt
-
 print_node_install
 
-  #SHELL
-  echo "Provisioning Completed"
+#SHELL
+echo "Provisioning Completed"

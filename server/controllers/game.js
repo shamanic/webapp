@@ -1,15 +1,19 @@
-/** play the game */
+/** 
+ * play the game 
+ */
 exports.index = function(req, res){
-	var SiteEnvironment = require('../settings/environment.js');
+	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/game', {
 		title: 'Shamanic [Play]',
 		websiteName: SiteEnvironment.websiteConfig.websiteName
   });
 };
 
-/** three.js test */
+/** 
+ * three.js test 
+ */
 exports.threejs = function(req, res) {
-  var SiteEnvironment = require('../settings/environment.js');
+  var SiteEnvironment = require('../../config/environment.js');
   res.render('pages/threejs', {
     title: 'Three.js Test',
     websiteName: SiteEnvironment.websiteConfig.websiteName
@@ -17,7 +21,7 @@ exports.threejs = function(req, res) {
 };
 
 exports.getSigils = function(req, res) {
-  var SiteEnvironment = require('../settings/environment.js');
+  var SiteEnvironment = require('../../config/environment.js');
   //database call eventually to go here..
   //return function(err, result) {
     var result = [

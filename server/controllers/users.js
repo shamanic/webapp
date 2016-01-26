@@ -19,7 +19,7 @@
  * show the user account page
  */
 exports.myaccount = function(req, res) {
-	var SiteEnvironment = require('../settings/environment.js');
+	var SiteEnvironment = require('../../config/environment.js');
 	req.db.fetchRow('SELECT fullname FROM users WHERE username = ?', [req.session.user.username], function(err, result) {
 	    if( ! err ) {
 			res.render('pages/users/account', {
@@ -32,11 +32,11 @@ exports.myaccount = function(req, res) {
 	});
 };
 
-/** 
+/**
  * show the login page 
  */
 exports.login = function(req, res) {
-	var SiteEnvironment = require('../settings/environment.js');
+	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/users/login', {
 		title : SiteEnvironment.websiteConfig.websiteName + ' [login]',
 		websiteName: SiteEnvironment.websiteConfig.websiteName
@@ -50,29 +50,29 @@ exports.login = function(req, res) {
 exports.checkLogin = function(req, res) {
 	req.db.fetchRow('SELECT uuid, username,password FROM users WHERE username = ?', [req.body.username], function(err, result) {
 
-		/** if results and no errors check the user password against DB and set the user to the session */
+		// if results and no errors check the user password against DB and set the user to the session
 		try{
 			if (req.bcrypt.compareSync(req.body.password, result.password)) {
 			    req.session.user = {uuid:result.uuid,username:result.username};
 			    
-			    /** update user last login timestamp */
+			    // update user last login timestamp
 			    var lastLogin = new req.db.DBExpr('NOW()');
                 var userObj = {last_login: lastLogin};
     			req.db.update('users', userObj , [[ 'uuid=?', result.uuid]], function(err) {});
 			    
-			    /** render success message, user found */
+			    // render success message, user found
 			    res.render('pages/response', {
 		    	    response : 'user login sucessful'
 		    	});
 				
 			} else {
-			    /** render error message, user not found */
+			    // render error message, user not found
 			    res.render('pages/response', {
 		    		response : 'not found'
 		    	});
 			}
 		} catch (err) {
-		    /** render error message, user not found */
+		    // render error message, user not found
 			console.log(err);
 		    res.render('pages/response', {
 	    		response : 'not found'
@@ -93,7 +93,7 @@ exports.logout = function(req, res) {
  * forgot password dialog
  */
 exports.forgot = function(req, res) {
-	var SiteEnvironment = require('../settings/environment.js');
+	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/users/forgot', {
 		title : SiteEnvironment.websiteConfig.websiteName + ' [Forgot Login]',
 		websiteName: SiteEnvironment.websiteConfig.websiteName
@@ -105,19 +105,19 @@ exports.forgot = function(req, res) {
  */
 exports.checkForgot = function(req, res) {
 
-	/** search by username, but only if no email else we always search by that */
+	// search by username, but only if no email else we always search by that
 	if (req.body.username.length > 0 && req.body.email.length == 0) {
 		req.db.fetchRow('SELECT email FROM users WHERE username = ?', [req.body.username], function(err, result) {
 			try {
 				if (typeof result.email !== 'undefined' && result.email !== null) {
-					/** render success message, and email recovery message */
+					// render success message, and email recovery message
 					recoverUser(result.email, req.bcrypt, req.db);
 				    res.render('pages/response', {
 					    response : 'user password recovered'
 					});
 				}
 			} catch (err) {
-				/** render error message, user not found */
+				// render error message, user not found
 				console.log(err);
 			    res.render('pages/response', {
 		    		response : 'not found'
@@ -126,19 +126,19 @@ exports.checkForgot = function(req, res) {
 		} );	
 	}
 	
-	/** search by email */
+	// search by email
 	if (req.body.email.length > 0) {
 		req.db.fetchRow('SELECT email FROM users WHERE email = ?', [req.body.email], function(err, result) {
 			try {
 				if (typeof result.email !== 'undefined' && result.email !== null) {
-					/** render success message, and email recovery message */
+					// render success message, and email recovery message
 					recoverUser(result.email, req.bcrypt, req.db);
 				    res.render('pages/response', {
 					    response : 'user password recovered'
 					});
 				}
 			} catch (err) {
-				/** render error message, user not found */
+				// render error message, user not found
 				console.log(err);
 			    res.render('pages/response', {
 		    		response : 'not found'
@@ -148,28 +148,28 @@ exports.checkForgot = function(req, res) {
 	}
 };
 
-/**  create a temporary password and recover email message for a user */
+//  create a temporary password and recover email message for a user
 var recoverUser = function(email, bcrypt, db) {
 	
-	/** get website environment settings */
-	var SiteEnvironment = require('../settings/environment.js');
+	// get website environment settings
+	var SiteEnvironment = require('../../config/environment.js');
 	
-	/** generate random password */
+	// generate random password
 	var seed = Math.floor(Math.random() * (10000000 - 100000) + 1);
 	var uuid = require('node-uuid');
 	var uuidV1 = uuid.v1();
 	uuidV1 = uuidV1.substring(0, 8)
 	var randomPassword = seed + uuidV1;
 	
-	/** bcrypted password for storage */
+	// bcrypted password for storage
 	var salt = bcrypt.genSaltSync(10);
 	var hashedPassword = bcrypt.hashSync(randomPassword, salt);
 	
-	/** update the user to have the random password */
+	// update the user to have the random password
 	var userObj = {password : hashedPassword};
 	db.update('users', userObj , [[ 'email=?', email]], function(err) {
 	    if( ! err ) {
-    		/** send the recovery message */
+    		// send the recovery message
     		emailUser(email, "Account recovery - " + SiteEnvironment.websiteConfig.websiteName, "This address has been requested for a password reset on " + SiteEnvironment.websiteConfig.websiteName + ".  \n\nYour account password is now: "+randomPassword+" \n\nIf this action is unfamiliar to you, please let us know.  -" + SiteEnvironment.websiteConfig.websiteEmailFromName);
 	    } 
     });
@@ -180,11 +180,11 @@ var recoverUser = function(email, bcrypt, db) {
  */
 exports.update = function(req, res) {
 	
-	/** create user object with the bcrypted password*/
+	// create user object with the bcrypted password
 	var salt = req.bcrypt.genSaltSync(10);
 	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
 	
-	/** update the user information and return a success / fail */
+	// update the user information and return a success / fail
 	var userObj = {fullname: req.body.fullname, password : hashedPassword};
 	req.db.update('users', userObj , [[ 'uuid=?', req.session.user.uuid]], function(err) {
 	    if( ! err ) {
@@ -203,7 +203,7 @@ exports.update = function(req, res) {
  * user signup page
  */
 exports.signup = function(req, res) {
-	var SiteEnvironment = require('../settings/environment.js');
+	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/users/signup', {
 		title : SiteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
 		websiteName: SiteEnvironment.websiteConfig.websiteName
@@ -215,15 +215,15 @@ exports.signup = function(req, res) {
  */
 exports.create = function(req, res) {
 	
-	/** get website environment settings */
-	var SiteEnvironment = require('../settings/environment.js');
+	// get website environment settings
+	var SiteEnvironment = require('../../config/environment.js');
 	
-	/** create user object with the bcrypted password*/
+	// create user object with the bcrypted password
 	var salt = req.bcrypt.genSaltSync(10);
 	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
 	var userObj = {fullname: req.body.fullname, email : req.body.email,username : req.body.username,password : hashedPassword};
 	
-	/** create new UUID and insert user */
+	// create new UUID and insert user
 	var uuid = require('node-uuid');
 	userObj.uuid = uuid.v1();
 	userObj.created_on = new req.db.DBExpr('NOW()');
@@ -245,7 +245,7 @@ exports.create = function(req, res) {
 	    }
 	} );
 	
-	/** send the thank you for signing up email */
+	// send the thank you for signing up email
 	emailUser(req.body.email, "Thank you for registering your account on "+ SiteEnvironment.websiteConfig.websiteName + "!", "This address has been used to create an account on "+ SiteEnvironment.websiteConfig.websiteName + ".  \n\nIf this action is unfamiliar to you, please let us know.  -" + SiteEnvironment.websiteConfig.websiteEmailFromName);
 };
 
@@ -254,13 +254,13 @@ exports.create = function(req, res) {
  */
 exports.checkExistingUserValues = function(req, res) {
 	
-	/** @todo have this query escaped safely from SQL injection attempts */
+	// @todo have this query escaped safely from SQL injection attempts
 	req.db.fetchRow('SELECT * FROM users WHERE '+req.body.property+'=\''+req.body.value+'\'', function(err, result) {
 		var existingUserValue = 'value exists';
 	    if( ! result ) {
 	    	existingUserValue = 'value does not exist';
 	    }
-	    /** render a generic JSON response with status message */
+	    // render a generic JSON response with status message
 	    res.render('pages/response', {
     		response : existingUserValue
     	});
@@ -271,8 +271,8 @@ exports.checkExistingUserValues = function(req, res) {
  * email user text based email with subject and message
  */
 var emailUser = function(address, subject, message) {
-	var AppSettings = require('../settings/settings.js');
-	var SiteEnvironment = require('../settings/environment.js');
+	var AppSettings = require('../../config/settings.js');
+	var SiteEnvironment = require('../../config/environment.js');
 	var email = require("../node_modules/emailjs/email");
 	var server = email.server.connect({
 		user : AppSettings.SMTPConfig.fromAddress,
@@ -289,3 +289,17 @@ var emailUser = function(address, subject, message) {
 		console.log(err || message);
 	});
 };
+
+/**
+ * get list of users
+ */
+exports.getUsers = function(req, res) {
+
+}
+
+/**
+ * get list of users JSON string
+ */
+exports.getUsersJSON = function(req, res) {
+
+}

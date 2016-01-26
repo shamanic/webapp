@@ -14,10 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+/** 
+ * show the main home page 
+ */
+exports.index = function(req, res) {
+	var SiteEnvironment = require('../../config/environment.js');
+	res.render('pages/index', {
+		title : SiteEnvironment.websiteConfig.websiteName,
+		websiteName: SiteEnvironment.websiteConfig.websiteName
+	});
+};
 
-/** generic website configuration for naming and referencing your site */
-exports.websiteConfig = {
-		websiteURL : 'http://shamanic-io.herokuapp.com/',
-		websiteName: 'Shamanic',
-		websiteEmailFromName: 'Shamanic.io Webmaster'
+/** 
+ * show the about page 
+ */
+exports.about = function(req, res) {
+	var SiteEnvironment = require('../../config/environment.js');
+	res.render('pages/about', {
+		title : SiteEnvironment.websiteConfig.websiteName,
+		websiteName: SiteEnvironment.websiteConfig.websiteName
+	});
 };
