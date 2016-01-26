@@ -17,7 +17,7 @@ sigilService.factory('sigilService', ['$http', function($http) {
 
     },
     getSigilsSimple: function() {
-      return $http.get('http://127.0.0.1:3000/sigils');
+      return $http.get('http://127.0.0.1:3000/game/sigils');
       // .success(function(data) {
       //   console.log("get success: " + data);
       //   return data;

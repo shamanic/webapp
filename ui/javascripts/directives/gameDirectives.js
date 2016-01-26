@@ -1,7 +1,12 @@
+var scripts = document.getElementsByTagName("script");
+var currentScriptPath = scripts[scripts.length-1].src;
+console.log('script path: ' + currentScriptPath);
+
 shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 	return {
 		restrict: 'E',
-		templateUrl: 'javascripts/views/sigilPartial.html',
+		// templateUrl: currentScriptPath.replace('gameDirectives.js', 'sigilPartial.html'),
+    templateUrl: 'ui/javascripts/views/sigilPartial.html',
 		scope: {
 			images: '='
 		},
@@ -26,7 +31,7 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 
   return {
     restrict: 'E',
-	  templateUrl: 'javascripts/views/mapPartial.html',
+	  templateUrl: 'ui/javascripts/views/mapPartial.html',
     scope: {
       data: '='
     },
