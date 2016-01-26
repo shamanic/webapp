@@ -15,23 +15,24 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 					scope.nowShowing = 0;
 				}
 			}, 2000);
-		scope.openSigilPage = function(index) {
-			$window.open(scope.images[index].url);
-		};
-		//scope.$apply();
+		  scope.openSigilPage = function(index) {
+			  $window.open(scope.images[index].url);
+		  };
+
 		}
 	};
 })
-.directive('d3Map', function() {
+.directive('d3Map', ['$timeout', 'sigilService', function($timeout, sigilService) {
+
   return {
     restrict: 'E',
-	templateUrl: 'javascripts/views/mapPartial.html',
+	  templateUrl: 'javascripts/views/mapPartial.html',
     scope: {
       data: '='
     },
     link: function(scope, element, attributes) {
 
-      var width = 600, height = 400;
+      var width = 600, height = 800;
 
       var svg = d3.select(".main-container").append("svg")
         .attr("width", width)
@@ -44,23 +45,44 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
       d3.selectAll("svg").attr("id", "gradient");
 
       var projection = d3.geo.albers()
-        .center([0, 55.4])
+        .center([-5.0, 55.4])
         .rotate([4.4, 0])
         .parallels([50, 60])
         .scale(6000)
         .translate([width / 2, height / 2]);
 
       var path = d3.geo.path().projection(projection);
-  
-      console.log('data from mapDirective: ', scope.data);
-	  
-      svg.append("path")
-        .datum(topojson.feature(scope.data, scope.data.objects.subunits))
-        //.transition()
-        //.duration(1000)
-        //.attrTween("stroke-dasharray", tweenDash)
-        //.ease("linear")
-        .attr("d", path);
+
+      var promise = sigilService.getMapSimple();
+      promise.then(
+        function(payload) {
+          scope.ukTopology = payload.data;
+          var subunits = topojson.feature(scope.ukTopology, scope.ukTopology.objects.subunits);
+          svg.append("path")
+            .datum(subunits)
+            .attr("d", path);
+        },
+        function(errPayload) {
+          console.log('failure communicating w sigilService.getMap API: ' + errPayload);
+      });
+
+      var topology = {
+        type: "Topology",
+        transform: {scale: [1, 1], translate: [0, 0]},
+        objects: {foo: {type: "Polygon", arcs: [[0]]}, bar: {type: "Polygon", arcs: [[0, 1]]}},
+        arcs: [[[0, 0], [1, 1]], [[1, 1], [-1, -1]]]
+      };
+
+      var arcs = topojson.feature(topology, topology.objects.foo);
+
+      svg.append("circle")
+         .attr("cx", 30)
+         .attr("cy", 80)
+         .attr("r", 20);
+
+      // scope.$watch('data', function(newVal) {
+      //   if(newVal) { var subunits = topojson.feature(scope.ukTopology, scope.ukTopology.objects.subunits); }
+      // }, true);
 
       //excellent function from Mario Klingemann http://codepen.io/quasimondo/pen/lDdrF
       function bgColors() {
@@ -68,7 +90,7 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
           [62, 35, 255], [60, 255, 60], [255, 35, 98], [45, 175, 230], [255, 0, 255], [255, 128, 0]);
 
         var step = 0;
-        //color table indices for: 
+        //color table indices for:
         // current color left
         // next color left
         // current color right
@@ -126,15 +148,14 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
           .each("end", function() {
             d3.select(this).call(transition);
           });
-      }
+      };
       function tweenDash() {
         var l = this.getTotalLength(),
           i = d3.interpolateString("0," + l, l + "," + l);
         return function(t) {
           return i(t);
-        };
-      }
-
+        }
+      };
     }
   }
-});
+}]);

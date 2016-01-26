@@ -25,6 +25,8 @@
 <script type="text/javascript" src="/javascripts/controllers/users.js"></script>
 <script type="text/javascript" src="/javascripts/directives/gameDirectives.js"></script>
 <script type="text/javascript" src="/javascripts/services/sigilService.js"></script>
+<script type="text/javascript" src="/javascripts/services/terraService.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/terra/latest/mainfile"></script>
 </head>
 <body class="ng-cloak">
 	<!-- Off Canvas Navigation -->
@@ -47,7 +49,7 @@
 						<li><a href="/">Home</a></li>
 					    <li><a href="/user/account">My Account</a></li>
 					    <li><a href="/user/logout">Logout</a></li>
- 					<% } else{ %>  
+ 					<% } else{ %>
  						<li><a href="/">Home</a></li>
 					    <li><a href="/user/login">Login</a></li>
 					    <li><a href="/user/signup">Signup</a></li>
@@ -65,6 +67,6 @@
 			<!-- Page Content  -->
 			<section class="main-section">
 				<div class="small-12 columns">
-				
-				
-				
+
+
+

@@ -1,13 +1,13 @@
 /**
  * Shamanic Web Application
  * @copyright 2015 Shamanic
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *	http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/** dependancies */
+/** dependencies */
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -48,7 +48,7 @@ var dbi = require('./db/config');
 dbi.dbWrapper.connect();
 app.use(function(req,res,next){
     req.db = dbi.dbWrapper;
-    req.db.DBExpr = require('node-dbi').DBExpr; 
+    req.db.DBExpr = require('node-dbi').DBExpr;
     req.bcrypt = bcrypt;
     next();
 });
@@ -71,25 +71,27 @@ app.use(function (req, res, next) {
 	next();
 });
 
-/*************************************************************** 
+/***************************************************************
  * MAP URLS TO ROUTES
  ***************************************************************/
 var site = require('./controllers/index');
 var game = require('./controllers/game');
 var users = require('./controllers/users');
 
-/** 
- * HOMEPAGE 
+/**
+ * HOMEPAGE
  */
 app.get('/', site.index);
 
-/** 
- * PLAY GAME 
+/**
+ * PLAY GAME
  */
 app.get('/game', requireLogin, game.index);
+app.get('/threejs', game.threejs);
+app.get('/sigils', game.getSigils);
 
-/** 
- * USERS 
+/**
+ * USERS
  */
 
 /** login / logout */
@@ -109,6 +111,11 @@ app.post('/user/checkExistingValue', users.checkExistingUserValues);
 /** forgot login */
 app.get('/user/forgot', users.forgot);
 app.post('/user/checkForgot', users.checkForgot);
+
+app.get('/user/getUsers', users.getUsers);
+
+/** get the list of users in JSON format */
+app.get('/user/getUsersInJson', users.getUsersInJsonFormat);
 
 /**************************************************************
  *  ERROR HANDLERS

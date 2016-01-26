@@ -1,15 +1,27 @@
 /**
  * game.js
- * 
+ *
  * @author khinds (c) shamanic.io, http://www.shamanic.io
  */
-var gameController = angular.module("gameController", ['sigilService']);
+var gameController = angular.module("gameController", ['sigilService', 'terraService']);
 
-gameController.controller("gameController", [ '$scope', 'sigilService', function($scope, sigilService) {
-	
+gameController.controller("gameController", [ '$scope', 'sigilService', 'terraService', function($scope, sigilService, terraService) {
+
+	$scope.terrafy = function() {
+		terraService();
+	}
+
 	//$scope.mapData = {};
-	$scope.sigilList = [];	
-	
+	$scope.sigilList = [];
+
+	var promise = sigilService.getSigilsSimple();
+	promise.then(function(payload) {
+		$scope.restImageList = payload.data;
+	},
+	function(errPayload) {
+		console.log('failure communicating w sigilService API: ' + errPayload)
+	});
+
 	$scope.imageList = [
 		{
 			url: 'http://placekitten.com/201/201',
@@ -20,9 +32,17 @@ gameController.controller("gameController", [ '$scope', 'sigilService', function
 			name: 'sigilTwo'
 		}
 	];
-	sigilService.success(function(data) {
-	  console.log('controller succeeded in getting map data');
-	  $scope.mapData = data;
-	  console.log('mapData from controller: ', $scope.mapData);
-	});
-} ]);
+
+	// sigilService.getSigils.success(function(data) {
+	//   console.log('controller succeeded in getting map data');
+	//   $scope.mapData = data;
+	//   console.log('mapData from controller: ', $scope.mapData);
+	// });
+	// function getSigils() {
+	// 	sigilService.getSigils()
+	// 		.then(function(result) {
+	// 			this.restImageList = result.data;
+	// 		});
+	// }
+	// getSigils();
+}]);
