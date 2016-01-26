@@ -22,7 +22,7 @@ GRANT ALL ON TABLE users TO shamanic_user;
 
 CREATE TABLE user_locations
 (
-  location_id uuid,
+  location_id uuid NOT NULL,
   created_on timestamp without time zone NOT NULL,
   longitude float8,
   latitude float8,
