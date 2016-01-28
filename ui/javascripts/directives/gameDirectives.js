@@ -41,13 +41,16 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 
       var svg = d3.select(".main-container").append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .call(d3.behavior.zoom().on("zoom", redraw));
 
       svg.append("rect")
         .attr("fill", function(d) {
           return bgColors();
         });
       d3.selectAll("svg").attr("id", "gradient");
+
+      var uk = svg.append("svg:g").attr("id", "uk");
 
       var projection = d3.geo.albers()
         .center([-5.0, 55.4])
@@ -58,12 +61,16 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 
       var path = d3.geo.path().projection(projection);
 
+      var t = projection.translate(); // the projection's default translation
+      var s = projection.scale() // the projection's default scale
+      var subunits = {};
+
       var promise = sigilService.getMapSimple();
       promise.then(
         function(payload) {
           scope.ukTopology = payload.data;
-          var subunits = topojson.feature(scope.ukTopology, scope.ukTopology.objects.subunits);
-          svg.append("path")
+          subunits = topojson.feature(scope.ukTopology, scope.ukTopology.objects.subunits);
+          uk.append("path")
             .datum(subunits)
             .attr("d", path);
         },
@@ -88,6 +95,34 @@ shamanicWebApp.directive('sigilGallery', function($interval, $window) {
       // scope.$watch('data', function(newVal) {
       //   if(newVal) { var subunits = topojson.feature(scope.ukTopology, scope.ukTopology.objects.subunits); }
       // }, true);
+
+      /*
+      from http://bl.ocks.org/biovisualize/2322933
+      Zoom/pan map example: integrates d3.geo and d3.behavior
+      Iain Dillingham, http://dillingham.me.uk/
+      With help from Jason Davies, http://www.jasondavies.com/
+      */
+      function redraw() {
+        // d3.event.translate (an array) stores the current translation from the parent SVG element
+        // t (an array) stores the projection's default translation
+        // we add the x and y vales in each array to determine the projection's new translation
+        var tx = t[0] * d3.event.scale + d3.event.translate[0];
+        var ty = t[1] * d3.event.scale + d3.event.translate[1];
+        projection.translate([tx, ty]);
+
+        // now we determine the projection's new scale, but there's a problem:
+        // the map doesn't 'zoom onto the mouse point'
+        projection.scale(s * d3.event.scale);
+
+        // redraw the map
+        uk.selectAll("path").attr("d", path);
+
+        // // redraw the x axis
+        // xAxis.attr("x1", tx).attr("x2", tx);
+
+        // // redraw the y axis
+        // yAxis.attr("y1", ty).attr("y2", ty);
+      }
 
       //excellent function from Mario Klingemann http://codepen.io/quasimondo/pen/lDdrF
       function bgColors() {
