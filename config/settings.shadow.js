@@ -28,3 +28,8 @@ exports.sessionKeys = {
 		cookieParserKey : 'secret string value here',
 		sessionKey: 'another secret string value here'
 };
+
+// 3rd party API session keys
+exports.apiKeys = {
+		googleMapsAPI : 'maps.googleapis.com here',
+};

@@ -144,13 +144,15 @@ ALTER TABLE users
   OWNER TO $APP_DB_USER;
 GRANT ALL ON TABLE users TO $APP_DB_USER;
 
-
 CREATE TABLE user_locations
 (
-  uuid uuid,
+  location_id serial NOT NULL,
+  user_uuid uuid NOT null,
   created_on timestamp without time zone NOT NULL,
+  longitude float8,
   latitude float8,
-  longitude float8
+  elevation float8,
+  CONSTRAINT user_locations_pkey PRIMARY KEY (location_id)
 )
 WITH (
   OIDS=FALSE

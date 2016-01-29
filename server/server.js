@@ -30,6 +30,13 @@ var server = express();
 server.set('views', path.join(__dirname, '../ui/html'));
 server.set('view engine', 'ejs');
 
+// global environment settings
+var SiteEnvironment = require('../config/environment.js');
+server.use(function(req,res,next){
+    req.siteEnvironment = SiteEnvironment;
+    next();
+});
+
 // load application resources
 server.use(favicon());
 server.use(logger('dev'));
@@ -40,10 +47,14 @@ server.use('/ui/images',express.static(path.join(__dirname, '../ui/images')));
 server.use('/ui/javascripts',express.static(path.join(__dirname, '../ui/javascripts')));
 server.use('/ui/stylesheets',express.static(path.join(__dirname, '../ui/stylesheets')));
 
-// cookie parsing sessions, create with application settings keys
+// setup global app settings, cookie parsing sessions, create with application settings keys
 var AppSettings = require('../config/settings.js');
 server.use(cookieParser(AppSettings.sessionKeys.cookieParserKey));
 server.use(session({secret: AppSettings.sessionKeys.sessionKey}));
+server.use(function(req,res,next){
+    req.appSettings = AppSettings;
+    next();
+});
 
 // make our db and application models and other global libraries accessible to our router
 var dbi = require('./db/config');
@@ -93,6 +104,7 @@ server.get('/game/sigils', game.getSigils);
 server.get('/user/login', users.login);
 server.post('/user/checkLogin', users.checkLogin);
 server.get('/user/logout', users.logout);
+server.get('/user/isLoggedIn', users.isLoggedIn);
 
 // edit account
 server.get('/user/account', requireLogin, users.myaccount);
@@ -110,6 +122,10 @@ server.post('/user/checkForgot', users.checkForgot);
 // get the list of users / also in JSON format
 server.get('/user/getUsers', users.getUsers);
 server.get('/user/getUsersJSON', users.getUsersJSON);
+
+// user persists location info
+server.post('/user/saveLocation', users.saveLocation);
+server.get('/user/getAltitude', users.getAltitude);
 
 /**************************************************************
  *  ERROR HANDLERS

@@ -19,10 +19,9 @@
  * show the main home page 
  */
 exports.index = function(req, res) {
-	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/index', {
-		title : SiteEnvironment.websiteConfig.websiteName,
-		websiteName: SiteEnvironment.websiteConfig.websiteName
+		title : req.siteEnvironment.websiteConfig.websiteName,
+		websiteName: req.siteEnvironment.websiteConfig.websiteName
 	});
 };
 
@@ -30,9 +29,8 @@ exports.index = function(req, res) {
  * show the about page 
  */
 exports.about = function(req, res) {
-	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/about', {
-		title : SiteEnvironment.websiteConfig.websiteName,
-		websiteName: SiteEnvironment.websiteConfig.websiteName
+		title : req.siteEnvironment.websiteConfig.websiteName,
+		websiteName: req.siteEnvironment.websiteConfig.websiteName
 	});
 };

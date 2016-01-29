@@ -19,10 +19,10 @@ ALTER TABLE users
   OWNER TO shamanic_user;
 GRANT ALL ON TABLE users TO shamanic_user;
 
-
 CREATE TABLE user_locations
 (
-  location_id uuid NOT NULL,
+  location_id serial NOT NULL,
+  user_uuid uuid NOT null,
   created_on timestamp without time zone NOT NULL,
   longitude float8,
   latitude float8,
@@ -33,5 +33,5 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE user_locations
-  OWNER TO website_db_user;
+  OWNER TO shamanic_user;
 GRANT ALL ON TABLE user_locations TO shamanic_user;

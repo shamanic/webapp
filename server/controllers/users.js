@@ -19,12 +19,11 @@
  * show the user account page
  */
 exports.myaccount = function(req, res) {
-	var SiteEnvironment = require('../../config/environment.js');
 	req.db.fetchRow('SELECT fullname FROM users WHERE username = ?', [req.session.user.username], function(err, result) {
 	    if( ! err ) {
 			res.render('pages/users/account', {
-				title : SiteEnvironment.websiteConfig.websiteName + ' [Manage Account]',
-				websiteName: SiteEnvironment.websiteConfig.websiteName,
+				title : req.siteEnvironment.websiteConfig.websiteName + ' [Manage Account]',
+				websiteName: req.siteEnvironment.websiteConfig.websiteName,
 				username: req.session.user.username,
 				fullname: result.fullname
 			});		    
@@ -36,10 +35,9 @@ exports.myaccount = function(req, res) {
  * show the login page 
  */
 exports.login = function(req, res) {
-	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/users/login', {
-		title : SiteEnvironment.websiteConfig.websiteName + ' [login]',
-		websiteName: SiteEnvironment.websiteConfig.websiteName
+		title : req.siteEnvironment.websiteConfig.websiteName + ' [login]',
+		websiteName: req.siteEnvironment.websiteConfig.websiteName
 	});
 };
 
@@ -93,10 +91,9 @@ exports.logout = function(req, res) {
  * forgot password dialog
  */
 exports.forgot = function(req, res) {
-	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/users/forgot', {
-		title : SiteEnvironment.websiteConfig.websiteName + ' [Forgot Login]',
-		websiteName: SiteEnvironment.websiteConfig.websiteName
+		title : req.siteEnvironment.websiteConfig.websiteName + ' [Forgot Login]',
+		websiteName: req.siteEnvironment.websiteConfig.websiteName
 	});
 };
 
@@ -203,10 +200,9 @@ exports.update = function(req, res) {
  * user signup page
  */
 exports.signup = function(req, res) {
-	var SiteEnvironment = require('../../config/environment.js');
 	res.render('pages/users/signup', {
-		title : SiteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
-		websiteName: SiteEnvironment.websiteConfig.websiteName
+		title : req.siteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
+		websiteName: req.siteEnvironment.websiteConfig.websiteName
 	});
 };
 
@@ -214,10 +210,6 @@ exports.signup = function(req, res) {
  * create user here 
  */
 exports.create = function(req, res) {
-	
-	// get website environment settings
-	var SiteEnvironment = require('../../config/environment.js');
-	
 	// create user object with the bcrypted password
 	var salt = req.bcrypt.genSaltSync(10);
 	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
@@ -230,15 +222,15 @@ exports.create = function(req, res) {
 	req.db.insert('users', userObj , function(err) {
 	    if( ! err ) {
 	    	res.render('pages/users/create', {
-	    		title : SiteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
-	    		websiteName: SiteEnvironment.websiteConfig.websiteName,
+	    		title : req.siteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
+	    		websiteName: req.siteEnvironment.websiteConfig.websiteName,
 	    		status: 'User account has been created.'
 	    	});
 	        return true;
 	    } else {
 	    	res.render('pages/users/create', {
-	    		title : SiteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
-	    		websiteName: SiteEnvironment.websiteConfig.websiteName,
+	    		title : req.siteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
+	    		websiteName: req.siteEnvironment.websiteConfig.websiteName,
 	    		status: 'An error has occurred, your user account could not be created.'
 	    	});
 	    	return false;
@@ -246,7 +238,7 @@ exports.create = function(req, res) {
 	} );
 	
 	// send the thank you for signing up email
-	emailUser(req.body.email, "Thank you for registering your account on "+ SiteEnvironment.websiteConfig.websiteName + "!", "This address has been used to create an account on "+ SiteEnvironment.websiteConfig.websiteName + ".  \n\nIf this action is unfamiliar to you, please let us know.  -" + SiteEnvironment.websiteConfig.websiteEmailFromName);
+	emailUser(req.body.email, "Thank you for registering your account on "+ req.siteEnvironment.websiteConfig.websiteName + "!", "This address has been used to create an account on "+ req.siteEnvironment.websiteConfig.websiteName + ".  \n\nIf this action is unfamiliar to you, please let us know.  -" + req.siteEnvironment.websiteConfig.websiteEmailFromName);
 };
 
 /** 
@@ -273,7 +265,7 @@ exports.checkExistingUserValues = function(req, res) {
 var emailUser = function(address, subject, message) {
 	var AppSettings = require('../../config/settings.js');
 	var SiteEnvironment = require('../../config/environment.js');
-	var email = require("../node_modules/emailjs/email");
+	var email = require("../../node_modules/emailjs/email");
 	var server = email.server.connect({
 		user : AppSettings.SMTPConfig.fromAddress,
 		password : AppSettings.SMTPConfig.sendMailPassword,
@@ -291,6 +283,72 @@ var emailUser = function(address, subject, message) {
 };
 
 /**
+ * expose is logged in for browser AJAX requests
+ */
+exports.isLoggedIn = function(req, res) {
+    res.render('pages/response', {
+		response : res.locals.loggedIn
+	});
+}
+
+/**
+ * get the altitude for current user by known lat/long
+ */
+exports.getAltitude = function(req, res) {
+	
+	var http = require('https');
+	var options = {
+	  host: 'maps.googleapis.com',
+	  path: '/maps/api/elevation/json?locations=' + req.query.lat + ',' + req.query.long + '&key=' + req.appSettings.apiKeys.googleMapsAPI
+	};
+	var callback = function(response) {
+	  var str = '';
+	  response.on('data', function (chunk) {
+	    str += chunk;
+	  });
+	  response.on('end', function () {
+		var elevationResponse = JSON.parse(str);
+		altitude = elevationResponse.results[0].elevation
+	    res.render('pages/response', {
+			response : altitude
+		});
+	  });
+	};
+	http.request(options, callback).end();
+}
+
+/**
+ * user saves current lat/long & elevation
+ */
+exports.saveLocation = function(req, res) {
+	if (!isEmpty(req.session.user.uuid)) {
+		var userLocationObj = {longitude: req.body.long, latitude : req.body.lat, elevation : req.body.elevation};
+		userLocationObj.created_on = new req.db.DBExpr('NOW()');
+		userLocationObj.user_uuid = req.session.user.uuid;			
+		req.db.insert('user_locations', userLocationObj , function(err) {
+		    if( ! err ) {
+		    	// show success message
+		        res.render('pages/response', {
+		    		response : 'saved'
+		    	});
+		        return true;
+		    } else {
+		    	// show success message
+		        res.render('pages/response', {
+		    		response : 'error'
+		    	});
+		    	return false;
+		    }
+		} );
+	} else {
+    	// show unauthorized message
+        res.render('pages/response', {
+    		response : 'unauthorized'
+    	});
+	}
+}
+
+/**
  * get list of users
  */
 exports.getUsers = function(req, res) {
@@ -302,4 +360,17 @@ exports.getUsers = function(req, res) {
  */
 exports.getUsersJSON = function(req, res) {
 
+}
+
+/**
+ * complete check if an mixed type is empty or not
+ */
+var isEmpty = function (obj) {
+    if (obj == null) return true;
+    if (obj.length && obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+    return true;
 }
