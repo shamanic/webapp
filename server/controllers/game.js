@@ -1,5 +1,5 @@
-/** 
- * play the game 
+/**
+ * play the game
  */
 exports.index = function(req, res){
 	res.render('pages/game', {
@@ -8,8 +8,16 @@ exports.index = function(req, res){
   });
 };
 
-/** 
- * three.js test 
+exports.basecamp = function(req, res) {
+  var SiteEnvironment = require('../../config/environment.js');
+  res.render('pages/basecamp', {
+    title: req.session.user.username + '\'s Shamanic [basecamp]',
+    websiteName: SiteEnvironment.websiteConfig.websiteName
+  });
+};
+
+/**
+ * three.js test
  */
 exports.threejs = function(req, res) {
   res.render('pages/threejs', {

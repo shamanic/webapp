@@ -1,20 +1,20 @@
 /**
  * Shamanic Web Application
  * @copyright 2015 Shamanic
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *	http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 /**
  * show the user account page
  */
@@ -26,13 +26,13 @@ exports.myaccount = function(req, res) {
 				websiteName: req.siteEnvironment.websiteConfig.websiteName,
 				username: req.session.user.username,
 				fullname: result.fullname
-			});		    
+			});
 	    }
 	});
 };
 
 /**
- * show the login page 
+ * show the login page
  */
 exports.login = function(req, res) {
 	res.render('pages/users/login', {
@@ -42,7 +42,7 @@ exports.login = function(req, res) {
 };
 
 /**
- * upon valid login credentials 
+ * upon valid login credentials
  * 	set secure cookie with the user's info
  */
 exports.checkLogin = function(req, res) {
@@ -52,17 +52,17 @@ exports.checkLogin = function(req, res) {
 		try{
 			if (req.bcrypt.compareSync(req.body.password, result.password)) {
 			    req.session.user = {uuid:result.uuid,username:result.username};
-			    
+
 			    // update user last login timestamp
 			    var lastLogin = new req.db.DBExpr('NOW()');
                 var userObj = {last_login: lastLogin};
     			req.db.update('users', userObj , [[ 'uuid=?', result.uuid]], function(err) {});
-			    
+
 			    // render success message, user found
 			    res.render('pages/response', {
 		    	    response : 'user login sucessful'
 		    	});
-				
+
 			} else {
 			    // render error message, user not found
 			    res.render('pages/response', {
@@ -74,13 +74,13 @@ exports.checkLogin = function(req, res) {
 			console.log(err);
 		    res.render('pages/response', {
 	    		response : 'not found'
-	    	});		    
+	    	});
 		}
 	} );
 };
 
-/** 
- * logout then redirect to home page 
+/**
+ * logout then redirect to home page
  */
 exports.logout = function(req, res) {
 	req.session = null;
@@ -98,7 +98,7 @@ exports.forgot = function(req, res) {
 };
 
 /**
- * search for user email recovery password  
+ * search for user email recovery password
  */
 exports.checkForgot = function(req, res) {
 
@@ -120,9 +120,9 @@ exports.checkForgot = function(req, res) {
 		    		response : 'not found'
 		    	});
 			}
-		} );	
+		} );
 	}
-	
+
 	// search by email
 	if (req.body.email.length > 0) {
 		req.db.fetchRow('SELECT email FROM users WHERE email = ?', [req.body.email], function(err, result) {
@@ -141,46 +141,46 @@ exports.checkForgot = function(req, res) {
 		    		response : 'not found'
 		    	});
 			}
-		} );	
+		} );
 	}
 };
 
 //  create a temporary password and recover email message for a user
 var recoverUser = function(email, bcrypt, db) {
-	
+
 	// get website environment settings
 	var SiteEnvironment = require('../../config/environment.js');
-	
+
 	// generate random password
 	var seed = Math.floor(Math.random() * (10000000 - 100000) + 1);
 	var uuid = require('node-uuid');
 	var uuidV1 = uuid.v1();
 	uuidV1 = uuidV1.substring(0, 8)
 	var randomPassword = seed + uuidV1;
-	
+
 	// bcrypted password for storage
 	var salt = bcrypt.genSaltSync(10);
 	var hashedPassword = bcrypt.hashSync(randomPassword, salt);
-	
+
 	// update the user to have the random password
 	var userObj = {password : hashedPassword};
 	db.update('users', userObj , [[ 'email=?', email]], function(err) {
 	    if( ! err ) {
     		// send the recovery message
     		emailUser(email, "Account recovery - " + SiteEnvironment.websiteConfig.websiteName, "This address has been requested for a password reset on " + SiteEnvironment.websiteConfig.websiteName + ".  \n\nYour account password is now: "+randomPassword+" \n\nIf this action is unfamiliar to you, please let us know.  -" + SiteEnvironment.websiteConfig.websiteEmailFromName);
-	    } 
+	    }
     });
 };
 
-/** 
- * update and redirect to /users/account 
+/**
+ * update and redirect to /users/account
  */
 exports.update = function(req, res) {
-	
+
 	// create user object with the bcrypted password
 	var salt = req.bcrypt.genSaltSync(10);
 	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
-	
+
 	// update the user information and return a success / fail
 	var userObj = {fullname: req.body.fullname, password : hashedPassword};
 	req.db.update('users', userObj , [[ 'uuid=?', req.session.user.uuid]], function(err) {
@@ -206,15 +206,19 @@ exports.signup = function(req, res) {
 	});
 };
 
-/** 
- * create user here 
+/**
+ * create user here
  */
 exports.create = function(req, res) {
+
+	// get website environment settings
+	var SiteEnvironment = require('../../config/environment.js');
+
 	// create user object with the bcrypted password
 	var salt = req.bcrypt.genSaltSync(10);
 	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
 	var userObj = {fullname: req.body.fullname, email : req.body.email,username : req.body.username,password : hashedPassword};
-	
+
 	// create new UUID and insert user
 	var uuid = require('node-uuid');
 	userObj.uuid = uuid.v1();
@@ -235,17 +239,17 @@ exports.create = function(req, res) {
 	    	});
 	    	return false;
 	    }
-	} );
-	
+	});
+
 	// send the thank you for signing up email
 	emailUser(req.body.email, "Thank you for registering your account on "+ req.siteEnvironment.websiteConfig.websiteName + "!", "This address has been used to create an account on "+ req.siteEnvironment.websiteConfig.websiteName + ".  \n\nIf this action is unfamiliar to you, please let us know.  -" + req.siteEnvironment.websiteConfig.websiteEmailFromName);
 };
 
-/** 
- * check if any user values are already existing 
+/**
+ * check if any user values are already existing
  */
 exports.checkExistingUserValues = function(req, res) {
-	
+
 	// @todo have this query escaped safely from SQL injection attempts
 	req.db.fetchRow('SELECT * FROM users WHERE '+req.body.property+'=\''+req.body.value+'\'', function(err, result) {
 		var existingUserValue = 'value exists';
@@ -282,6 +286,7 @@ var emailUser = function(address, subject, message) {
 	});
 };
 
+
 /**
  * expose is logged in for browser AJAX requests
  */
@@ -295,7 +300,7 @@ exports.isLoggedIn = function(req, res) {
  * get the altitude for current user by known lat/long
  */
 exports.getAltitude = function(req, res) {
-	
+
 	var http = require('https');
 	var options = {
 	  host: 'maps.googleapis.com',
@@ -324,7 +329,7 @@ exports.saveLocation = function(req, res) {
 	if (!isEmpty(req.session.user.uuid)) {
 		var userLocationObj = {longitude: req.body.long, latitude : req.body.lat, elevation : req.body.elevation};
 		userLocationObj.created_on = new req.db.DBExpr('NOW()');
-		userLocationObj.user_uuid = req.session.user.uuid;			
+		userLocationObj.user_uuid = req.session.user.uuid;
 		req.db.insert('user_locations', userLocationObj , function(err) {
 		    if( ! err ) {
 		    	// show success message
@@ -349,20 +354,6 @@ exports.saveLocation = function(req, res) {
 }
 
 /**
- * get list of users
- */
-exports.getUsers = function(req, res) {
-
-}
-
-/**
- * get list of users JSON string
- */
-exports.getUsersJSON = function(req, res) {
-
-}
-
-/**
  * complete check if an mixed type is empty or not
  */
 var isEmpty = function (obj) {
@@ -374,3 +365,4 @@ var isEmpty = function (obj) {
     }
     return true;
 }
+

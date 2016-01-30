@@ -84,18 +84,45 @@ server.use(function (req, res, next) {
 	next();
 });
 
+// determine if the user requesting the page is an admin, for Utils pages
+function isAdmin (req, res, next) {
+    if (!req.session.user.username) {
+        //console.log(req.session.user.username);
+        res.redirect('/');
+    } else {
+        //console.log(req.session.user.username);
+        next();
+    }
+}
+
+// find the user's icon from the database
+server.param('basecamp_icon', function(req, res, next, id) {
+
+    if(err) {
+        next(err);
+    } else if(req.session.user) {
+        req.basecamp_icon =  basecamp_icon;
+        next();
+    } else {
+        next(new Error('failed to get the user\'s basecamp icon'));
+    }
+
+})
+
 /***************************************************************
  * MAP URLS TO ROUTES
  ***************************************************************/
 var site = require('./controllers/index');
 var game = require('./controllers/game');
 var users = require('./controllers/users');
+var utils = require('./controllers/utilities');
 
 // HOMEPAGE //
 server.get('/', site.index);
 
 // PLAY GAME //
 server.get('/game', requireLogin, game.index);
+server.get('/basecamp', requireLogin, game.basecamp);
 server.get('/threejs', game.threejs);
 server.get('/game/sigils', game.getSigils);
 
@@ -119,9 +146,13 @@ server.post('/user/checkExistingValue', users.checkExistingUserValues);
 server.get('/user/forgot', users.forgot);
 server.post('/user/checkForgot', users.checkForgot);
 
+
+// UTILITIES
+/** Components for Monitoring/Traffic/Maintenance */
+
 // get the list of users / also in JSON format
-server.get('/user/getUsers', users.getUsers);
-server.get('/user/getUsersJSON', users.getUsersJSON);
+server.get('/utilities/getUsers', isAdmin, utils.getUsers);
+server.get('/utilities/getUsersJSON', isAdmin, utils.getUsersJSON);
 
 // user persists location info
 server.post('/user/saveLocation', users.saveLocation);

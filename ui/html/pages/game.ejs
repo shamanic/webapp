@@ -1,14 +1,16 @@
 <% include ../partials/header %>
 <div class='main-container' ng-controller='gameController'>
-
-	<appear-button type="button"/>
-
+  <div id="stuffFromDavid">
     <button id="getSigilButton" ng-click="showSigils = !showSigils;">Get Sigils</button>
     <button id="generateTerraCycleButton" ng-click="terrafy();">TerraCycle</button>
-
-  <sigil-gallery images="imageList" ng-show="showSigils"></sigil-gallery>
-  <sigil-gallery images="restImageList" ng-show="showSigils">REST_sigils</sigil-gallery>
-  <d3-Map data="mapData" id="d3-Map"></d3-Map>
-  <div id="svgAnchor"></div>
+    <sigil-gallery images="imageList" ng-show="showSigils"></sigil-gallery>
+    <sigil-gallery images="restImageList" ng-show="showSigils">REST_sigils</sigil-gallery>
+    <d3-Map data="mapData" id="d3-Map"></d3-Map>
+    <basecamp image="basecamp_icon"></basecamp>
+    <div id="svgAnchor"></div>
+  </div>
+  <div id="stuffFromKevin">
+    <appear-button type="button"/>
+  </div>
 </div>
 <% include ../partials/footer %>
