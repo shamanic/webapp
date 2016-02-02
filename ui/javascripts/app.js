@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var shamanicWebApp = angular.module('shamanicWebApp', [ 'mm.foundation', 'indexController', 'userControllers', 'gameController', 'menuControllers', 'ngRoute']);
+var shamanicWebApp = angular.module('shamanicWebApp', [ 'mm.foundation', 'indexController', 'userControllers', 'gameController', 'menuControllers', 'utilitiesController', 'ngRoute']);
 
 // Intercept POST requests, convert to standard form encoding
 shamanicWebApp.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {

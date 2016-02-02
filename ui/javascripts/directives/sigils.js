@@ -1,11 +1,11 @@
 /**
  * sigils.js
- * 
+ *
  * @author dschmitz (c) shamanic.io, http://www.shamanic.io
  */
 var scripts = document.getElementsByTagName("script");
 var currentScriptPath = scripts[scripts.length-1].src;
-console.log('script path: ' + currentScriptPath);
+// console.log('script path: ' + currentScriptPath);
 shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 	return {
 		restrict: 'E',

@@ -84,16 +84,24 @@ server.use(function (req, res, next) {
 	next();
 });
 
-// determine if the user requesting the page is an admin, for Utils pages
+//determine if the user requesting the page is an admin, for Utils pages
 function isAdmin (req, res, next) {
-    if (!req.session.user.username) {
-        //console.log(req.session.user.username);
+    if (!req.session.user.is_admin) {
+        console.log(req.session.user.username + 'requested an admin page without credentials');
         res.redirect('/');
     } else {
-        //console.log(req.session.user.username);
+        console.log(req.session.user.username + ', an admin, requested an admin page');
         next();
     }
 }
+
+// server.use(function (req, res, next) {
+//     res.locals.isAdmin = false;
+//     if (req.session.user.is_admin) {
+//         res.locals.isAdmin = true;
+//     }
+//     next();
+// });
 
 // find the user's icon from the database
 server.param('basecamp_icon', function(req, res, next, id) {
@@ -146,17 +154,25 @@ server.post('/user/checkExistingValue', users.checkExistingUserValues);
 server.get('/user/forgot', users.forgot);
 server.post('/user/checkForgot', users.checkForgot);
 
+// user persists location info
+server.post('/user/saveLocation', users.saveLocation);
+server.get('/user/getAltitude', users.getAltitude);
+
 
 // UTILITIES
 /** Components for Monitoring/Traffic/Maintenance */
+
+// locations tables
+server.get('/utilities/locations', isAdmin, utils.locations);
 
 // get the list of users / also in JSON format
 server.get('/utilities/getUsers', isAdmin, utils.getUsers);
 server.get('/utilities/getUsersJSON', isAdmin, utils.getUsersJSON);
 
-// user persists location info
-server.post('/user/saveLocation', users.saveLocation);
-server.get('/user/getAltitude', users.getAltitude);
+//get lists of location points
+server.get('/utilities/getLocationsForUser', isAdmin, utils.getLocationsForUser);
+server.get('/utilities/getAllLocations', isAdmin, utils.getAllLocations);
+
 
 /**************************************************************
  *  ERROR HANDLERS

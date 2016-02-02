@@ -1,15 +1,33 @@
 var terraService = angular.module('terraService',[]);
 
-terraService.factory('terraService', ['$window', function(win) {
+terraService.factory('terraService', ['$window', '$timeout', function(win, $timeout) {
+  var width, height;
+  var cyclic = {};
+  $timeout(function() {
 
-  var cycles = [];
-  var cyclic = new terra.Terrarium(100, 100, {
+    width = $("svg#gradient").width();
+    height = $("svg#gradient").height();
+    cyclic = new terra.Terrarium((width / 10), (height / 10), {
       "id":"terraCycle",
-      cellSize: 1,
-      insertAfter: document.getElementById("svgAnchor"),
+      cellSize: width / 100,
+      insertAfter: document.getElementById("stuffFromDavid"),
       periodic:true
     });
+    cyclic.grid = cyclic.makeGrid('cyclic');
+    cyclic.animate();
+    //console.log('cyclic w&h: ' + cyclic.width + ', ' + cyclic.height);
+    //console.log('element gradient width&height: ' + $("svg#gradient").width() + ', ' + $("svg#gradient").height());
+  }, 5000);
+
+    //width = 100;
+
+    // height = 100;
+
+
+  var cycles = [];
+
   cycles.push(cyclic);
+
   // var msgs = [];
   return function() {
     terra.registerCA({
@@ -29,8 +47,6 @@ terraService.factory('terraService', ['$window', function(win) {
     this.state = Math.floor(Math.random() * 16);
   });
 
-  cyclic.grid = cyclic.makeGrid('cyclic');
-  cyclic.animate();
 
   // msgs.push(msg);
   //  if (msgs.length == 3) {

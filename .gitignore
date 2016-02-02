@@ -1,4 +1,6 @@
 **/settings.js
+Vagrantfile
 **/Vagrantfile
+build.sh
 **/build.sh
 scratch/*

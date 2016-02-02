@@ -46,12 +46,12 @@ exports.login = function(req, res) {
  * 	set secure cookie with the user's info
  */
 exports.checkLogin = function(req, res) {
-	req.db.fetchRow('SELECT uuid, username,password FROM users WHERE username = ?', [req.body.username], function(err, result) {
-
+	req.db.fetchRow('SELECT uuid, username, password, is_admin FROM users WHERE username = ?', [req.body.username], function(err, result) {
+		console.log('result:' + result.uuid + ', ' + result.username + ', ' + result.is_admin);
 		// if results and no errors check the user password against DB and set the user to the session
 		try{
 			if (req.bcrypt.compareSync(req.body.password, result.password)) {
-			    req.session.user = {uuid:result.uuid,username:result.username};
+			    req.session.user = {uuid:result.uuid, username:result.username, is_admin:result.is_admin};
 
 			    // update user last login timestamp
 			    var lastLogin = new req.db.DBExpr('NOW()');
@@ -176,7 +176,6 @@ var recoverUser = function(email, bcrypt, db) {
  * update and redirect to /users/account
  */
 exports.update = function(req, res) {
-
 	// create user object with the bcrypted password
 	var salt = req.bcrypt.genSaltSync(10);
 	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
@@ -296,6 +295,12 @@ exports.isLoggedIn = function(req, res) {
 	});
 }
 
+exports.isAdmin = function(req, res) {
+	res.render('pages/response', {
+		response: res.locals.isAdmin
+	});
+}
+
 /**
  * get the altitude for current user by known lat/long
  */
@@ -312,11 +317,12 @@ exports.getAltitude = function(req, res) {
 	    str += chunk;
 	  });
 	  response.on('end', function () {
-		var elevationResponse = JSON.parse(str);
-		altitude = elevationResponse.results[0].elevation
+			var elevationResponse = JSON.parse(str);
+			var altitude = elevationResponse.results[0].elevation;
+			console.log('altitude: ' + altitude);
 	    res.render('pages/response', {
-			response : altitude
-		});
+				response : altitude
+			});
 	  });
 	};
 	http.request(options, callback).end();
@@ -352,6 +358,7 @@ exports.saveLocation = function(req, res) {
     	});
 	}
 }
+
 
 /**
  * complete check if an mixed type is empty or not
