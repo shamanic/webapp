@@ -1,34 +1,23 @@
 /**
- * Shamanic Web Application
- * @copyright 2015 Shamanic
+ * Users Controller
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @author khinds
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
  */
 
 /**
  * show the user account page
  */
 exports.myaccount = function(req, res) {
-	req.db.fetchRow('SELECT fullname FROM users WHERE username = ?', [req.session.user.username], function(err, result) {
-	    if( ! err ) {
-			res.render('pages/users/account', {
-				title : req.siteEnvironment.websiteConfig.websiteName + ' [Manage Account]',
-				websiteName: req.siteEnvironment.websiteConfig.websiteName,
-				username: req.session.user.username,
-				fullname: result.fullname
-			});
-	    }
-	});
+	req.userModel.getByUserName(req, req.session.user.username).then(function (result) {
+		res.render('pages/users/account', {
+			title : req.siteEnvironment.websiteConfig.websiteName + ' [Manage Account]',
+			websiteName: req.siteEnvironment.websiteConfig.websiteName,
+			username: req.session.user.username,
+			fullname: result.fullname
+		});
+	});	
 };
 
 /**
@@ -46,37 +35,21 @@ exports.login = function(req, res) {
  * 	set secure cookie with the user's info
  */
 exports.checkLogin = function(req, res) {
-	req.db.fetchRow('SELECT uuid, username,password FROM users WHERE username = ?', [req.body.username], function(err, result) {
-
-		// if results and no errors check the user password against DB and set the user to the session
-		try{
-			if (req.bcrypt.compareSync(req.body.password, result.password)) {
-			    req.session.user = {uuid:result.uuid,username:result.username};
-
-			    // update user last login timestamp
-			    var lastLogin = new req.db.DBExpr('NOW()');
-                var userObj = {last_login: lastLogin};
-    			req.db.update('users', userObj , [[ 'uuid=?', result.uuid]], function(err) {});
-
-			    // render success message, user found
-			    res.render('pages/response', {
-		    	    response : 'user login sucessful'
-		    	});
-
-			} else {
-			    // render error message, user not found
-			    res.render('pages/response', {
-		    		response : 'not found'
-		    	});
-			}
-		} catch (err) {
-		    // render error message, user not found
-			console.log(err);
-		    res.render('pages/response', {
-	    		response : 'not found'
-	    	});
+	
+	// if results and no errors check the user password against DB and set the user to the session
+	req.userModel.getByUserName(req, req.body.username).then(function(result) {
+		if (req.bcrypt.compareSync(req.body.password, result.password)) {
+			
+		    // render success message, set user in session and update last login time
+			req.session.user = {uuid:result.uuid,username:result.username};
+		    req.userModel.updateLastLogin(req, result.uuid);
+		    res.render('pages/response', {response : 'user login sucessful'});
+		} else {
+			res.render('pages/response', {response : 'not found'});
 		}
-	} );
+	  }).catch(function(err) {
+	      res.render('pages/response', {response : 'not found'});
+	  });
 };
 
 /**
@@ -101,99 +74,47 @@ exports.forgot = function(req, res) {
  * search for user email recovery password
  */
 exports.checkForgot = function(req, res) {
-
+	
 	// search by username, but only if no email else we always search by that
 	if (req.body.username.length > 0 && req.body.email.length == 0) {
-		req.db.fetchRow('SELECT email FROM users WHERE username = ?', [req.body.username], function(err, result) {
-			try {
-				if (typeof result.email !== 'undefined' && result.email !== null) {
-					// render success message, and email recovery message
-					recoverUser(result.email, req.bcrypt, req.db);
-				    res.render('pages/response', {
-					    response : 'user password recovered'
-					});
-				}
-			} catch (err) {
-				// render error message, user not found
-				console.log(err);
-			    res.render('pages/response', {
-		    		response : 'not found'
-		    	});
+		req.userModel.getByUserName(req, req.body.username).then(function (result) {
+			
+			// render success message, and email recovery message
+			if (typeof result.email !== 'undefined' && result.email !== null) {
+				req.userModel.recoverPassword(req, result.email);
+			    res.render('pages/response', {response : 'user password recovered'});
+			} else {
+			    res.render('pages/response', {response : 'not found'});
 			}
-		} );
+		 }).catch(function(err) {
+			 res.render('pages/response', {response : 'not found'});
+		 });
 	}
 
 	// search by email
 	if (req.body.email.length > 0) {
-		req.db.fetchRow('SELECT email FROM users WHERE email = ?', [req.body.email], function(err, result) {
-			try {
-				if (typeof result.email !== 'undefined' && result.email !== null) {
-					// render success message, and email recovery message
-					recoverUser(result.email, req.bcrypt, req.db);
-				    res.render('pages/response', {
-					    response : 'user password recovered'
-					});
-				}
-			} catch (err) {
-				// render error message, user not found
-				console.log(err);
-			    res.render('pages/response', {
-		    		response : 'not found'
-		    	});
-			}
-		} );
+		req.userModel.getByEmail(req, req.body.email).then(function (result) {
+			if (typeof result.email !== 'undefined' && result.email !== null) {
+				
+				// render success message, and email recovery message
+				req.userModel.recoverPassword(req, result.email);					
+			    res.render('pages/response', {response : 'user password recovered'});
+			}			
+		 }).catch(function(err) {
+		    res.render('pages/response', {response : 'not found'});
+		 });
 	}
-};
-
-//  create a temporary password and recover email message for a user
-var recoverUser = function(email, bcrypt, db) {
-
-	// get website environment settings
-	var SiteEnvironment = require('../../config/environment.js');
-
-	// generate random password
-	var seed = Math.floor(Math.random() * (10000000 - 100000) + 1);
-	var uuid = require('node-uuid');
-	var uuidV1 = uuid.v1();
-	uuidV1 = uuidV1.substring(0, 8)
-	var randomPassword = seed + uuidV1;
-
-	// bcrypted password for storage
-	var salt = bcrypt.genSaltSync(10);
-	var hashedPassword = bcrypt.hashSync(randomPassword, salt);
-
-	// update the user to have the random password
-	var userObj = {password : hashedPassword};
-	db.update('users', userObj , [[ 'email=?', email]], function(err) {
-	    if( ! err ) {
-    		// send the recovery message
-    		emailUser(email, "Account recovery - " + SiteEnvironment.websiteConfig.websiteName, "This address has been requested for a password reset on " + SiteEnvironment.websiteConfig.websiteName + ".  \n\nYour account password is now: "+randomPassword+" \n\nIf this action is unfamiliar to you, please let us know.  -" + SiteEnvironment.websiteConfig.websiteEmailFromName);
-	    }
-    });
 };
 
 /**
  * update and redirect to /users/account
  */
 exports.update = function(req, res) {
-
-	// create user object with the bcrypted password
-	var salt = req.bcrypt.genSaltSync(10);
-	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
-
-	// update the user information and return a success / fail
-	var userObj = {fullname: req.body.fullname, password : hashedPassword};
-	req.db.update('users', userObj , [[ 'uuid=?', req.session.user.uuid]], function(err) {
-	    if( ! err ) {
-		    res.render('pages/response', {
-	    	    response : 'User Updated Successfully.'
-	    	});
-	    } else {
-		    res.render('pages/response', {
-	    	    response : 'User information could not be updated.'
-	    	});
-	    }
-    } );
+	req.userModel.updateNameAndPassword(req, req.body.fullname, req.body.password).then(function (result) {
+	    res.render('pages/response', {response : 'User Updated Successfully.'});
+	}).catch(function(err) {
+		res.render('pages/response', {response : 'User information could not be updated.'});
+	});
 };
 
 /**
@@ -210,88 +131,42 @@ exports.signup = function(req, res) {
  * create user here
  */
 exports.create = function(req, res) {
-
-	// get website environment settings
-	var SiteEnvironment = require('../../config/environment.js');
-
-	// create user object with the bcrypted password
-	var salt = req.bcrypt.genSaltSync(10);
-	var hashedPassword = req.bcrypt.hashSync(req.body.password, salt);
-	var userObj = {fullname: req.body.fullname, email : req.body.email,username : req.body.username,password : hashedPassword};
-
-	// create new UUID and insert user
-	var uuid = require('node-uuid');
-	userObj.uuid = uuid.v1();
-	userObj.created_on = new req.db.DBExpr('NOW()');
-	req.db.insert('users', userObj , function(err) {
-	    if( ! err ) {
-	    	res.render('pages/users/create', {
-	    		title : req.siteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
-	    		websiteName: req.siteEnvironment.websiteConfig.websiteName,
-	    		status: 'User account has been created.'
-	    	});
-	        return true;
-	    } else {
-	    	res.render('pages/users/create', {
-	    		title : req.siteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
-	    		websiteName: req.siteEnvironment.websiteConfig.websiteName,
-	    		status: 'An error has occurred, your user account could not be created.'
-	    	});
-	    	return false;
-	    }
+	req.userModel.createNew(req).then(function (result) {
+    	res.render('pages/users/create', {
+    		title : req.siteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
+    		websiteName: req.siteEnvironment.websiteConfig.websiteName,
+    		status: 'User account has been created.'
+    	});
+    	
+    	// send the thank you for signing up email
+    	req.emailHelper.emailUser(req, req.body.email, "Thank you for registering your account on "+ req.siteEnvironment.websiteConfig.websiteName + "!", "This address has been used to create an account on "+ req.siteEnvironment.websiteConfig.websiteName + ".  \n\nIf this action is unfamiliar to you, please let us know.  -" + req.siteEnvironment.websiteConfig.websiteEmailFromName);
+	}).catch(function(err) {
+		res.render('pages/users/create', {
+    		title : req.siteEnvironment.websiteConfig.websiteName + ' [Join Us!]',
+    		websiteName: req.siteEnvironment.websiteConfig.websiteName,
+    		status: 'An error has occurred, your user account could not be created.'
+    	});
 	});
-
-	// send the thank you for signing up email
-	emailUser(req.body.email, "Thank you for registering your account on "+ req.siteEnvironment.websiteConfig.websiteName + "!", "This address has been used to create an account on "+ req.siteEnvironment.websiteConfig.websiteName + ".  \n\nIf this action is unfamiliar to you, please let us know.  -" + req.siteEnvironment.websiteConfig.websiteEmailFromName);
 };
 
 /**
  * check if any user values are already existing
  */
 exports.checkExistingUserValues = function(req, res) {
-
-	// @todo have this query escaped safely from SQL injection attempts
-	req.db.fetchRow('SELECT * FROM users WHERE '+req.body.property+'=\''+req.body.value+'\'', function(err, result) {
+	req.userModel.checkNameValueExists(req, req.body.property, req.body.value).then(function (result) {
 		var existingUserValue = 'value exists';
-	    if( ! result ) {
-	    	existingUserValue = 'value does not exist';
-	    }
-	    // render a generic JSON response with status message
-	    res.render('pages/response', {
-    		response : existingUserValue
-    	});
-	} );
-};
-
-/**
- * email user text based email with subject and message
- */
-var emailUser = function(address, subject, message) {
-	var AppSettings = require('../../config/settings.js');
-	var SiteEnvironment = require('../../config/environment.js');
-	var email = require("../../node_modules/emailjs/email");
-	var server = email.server.connect({
-		user : AppSettings.SMTPConfig.fromAddress,
-		password : AppSettings.SMTPConfig.sendMailPassword,
-		host : AppSettings.SMTPConfig.mailHost,
-		ssl : true
-	});
-	server.send({
-		from : SiteEnvironment.websiteConfig.websiteEmailFromName + " <"+AppSettings.SMTPConfig.fromAddress+">",
-		to : address,
-		subject : subject,
-		text : message,
-	}, function(err, message) {
-		console.log(err || message);
+	    if( ! result ) { existingUserValue = 'value does not exist'; }
+	    res.render('pages/response', {response : existingUserValue});
+	}).catch(function(err) {
+		res.render('pages/response', {response : 'value does not exist'});
 	});
 };
-
 
 /**
  * expose is logged in for browser AJAX requests
  */
 exports.isLoggedIn = function(req, res) {
-    res.render('pages/response', {
+	res.render('pages/response', {
 		response : res.locals.loggedIn
 	});
 }
@@ -300,7 +175,6 @@ exports.isLoggedIn = function(req, res) {
  * get the altitude for current user by known lat/long
  */
 exports.getAltitude = function(req, res) {
-
 	var http = require('https');
 	var options = {
 	  host: 'maps.googleapis.com',
@@ -326,43 +200,31 @@ exports.getAltitude = function(req, res) {
  * user saves current lat/long & elevation
  */
 exports.saveLocation = function(req, res) {
-	if (!isEmpty(req.session.user.uuid)) {
-		var userLocationObj = {longitude: req.body.long, latitude : req.body.lat, elevation : req.body.elevation};
-		userLocationObj.created_on = new req.db.DBExpr('NOW()');
-		userLocationObj.user_uuid = req.session.user.uuid;
-		req.db.insert('user_locations', userLocationObj , function(err) {
-		    if( ! err ) {
-		    	// show success message
-		        res.render('pages/response', {
-		    		response : 'saved'
-		    	});
-		        return true;
-		    } else {
-		    	// show success message
-		        res.render('pages/response', {
-		    		response : 'error'
-		    	});
-		    	return false;
-		    }
-		} );
+	if (!req.variableHelper.isEmpty(req.session.user.uuid)) {
+		req.locationModel.addLocationForUser(req, req.body.long, req.body.lat, req.body.elevation).then(function (result) {
+			res.render('pages/response', {response : 'saved'});
+		}).catch(function(err) {
+			res.render('pages/response', {response : 'error'});
+		});
 	} else {
-    	// show unauthorized message
-        res.render('pages/response', {
-    		response : 'unauthorized'
-    	});
+        res.render('pages/response', {response : 'unauthorized'});
 	}
 }
 
-/**
- * complete check if an mixed type is empty or not
- */
-var isEmpty = function (obj) {
-    if (obj == null) return true;
-    if (obj.length && obj.length > 0)    return false;
-    if (obj.length === 0)  return true;
-    for (var key in obj) {
-        if (hasOwnProperty.call(obj, key)) return false;
-    }
-    return true;
-}
+// generic require logged in user checking for any routes that may require it
+exports.requireLogin = function(req, res, next) {
+	if (!req.session.user) {
+	  res.redirect('/user/login');
+	} else {
+	  next();
+	}
+};
 
+//determine if the user requesting the page is an admin, for Utils pages
+exports.isAdmin = function(req, res, next) {
+  if (!req.session.user.username) {
+      res.redirect('/');
+  } else {
+      next();
+  }
+}

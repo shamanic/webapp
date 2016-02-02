@@ -2,7 +2,9 @@
  * location.js
  * 	persist to global scope user's current lat/long and elevation to save later 
  *
- * @author khinds (c) shamanic.io, http://www.shamanic.io
+ * @author khinds
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
  */
 shamanicWebApp.directive('locationTracker', function() {
 	return {

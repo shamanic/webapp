@@ -20,6 +20,7 @@
     "node-dbi": "0.7.1",
     "node-uuid": "1.4.3",
     "pg": "4.2.0",
-    "static-favicon": "1.0.2"
+    "static-favicon": "1.0.2",
+    "promise": "~7.1.1"
   }
 }

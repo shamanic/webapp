@@ -1,7 +1,13 @@
+/**
+ * Terra Service 
+ *
+ * @author khinds
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
+ */
 var terraService = angular.module('terraService',[]);
 
 terraService.factory('terraService', ['$window', function(win) {
-
   var cycles = [];
   var cyclic = new terra.Terrarium(100, 100, {
       "id":"terraCycle",

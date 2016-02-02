@@ -1,5 +1,13 @@
 /**
- * play the game
+ * Play Game Controller
+ *
+ * @author davidps
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
+ */
+
+/**
+ * play the game home page
  */
 exports.index = function(req, res){
 	res.render('pages/game', {
@@ -8,11 +16,13 @@ exports.index = function(req, res){
   });
 };
 
+/**
+ * visit basecamp
+ */
 exports.basecamp = function(req, res) {
-  var SiteEnvironment = require('../../config/environment.js');
   res.render('pages/basecamp', {
     title: req.session.user.username + '\'s Shamanic [basecamp]',
-    websiteName: SiteEnvironment.websiteConfig.websiteName
+    websiteName: req.siteEnvironment.websiteConfig.websiteName
   });
 };
 

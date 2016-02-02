@@ -1,7 +1,9 @@
 /**
  * sigils.js
- * 
- * @author dschmitz (c) shamanic.io, http://www.shamanic.io
+ *
+ * @author davidps
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
  */
 var scripts = document.getElementsByTagName("script");
 var currentScriptPath = scripts[scripts.length-1].src;

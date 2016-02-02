@@ -1,8 +1,10 @@
 /**
  * appear.js
- * 	a general clickable element located throughout the game to "appear" at a certain location, persist your lat/long & elevation 
+ * 	a general clickable element located throughout the game to "appear" at a certain location, persist your lat/long & elevation
  *
- * @author khinds (c) shamanic.io, http://www.shamanic.io
+ * @author khinds
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
  */
 shamanicWebApp.directive('appearButton', function() {
 	return {

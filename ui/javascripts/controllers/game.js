@@ -1,7 +1,9 @@
 /**
- * game.js
+ * Game Controllers
  *
- * @author khinds (c) shamanic.io, http://www.shamanic.io
+ * @author khinds, davidps
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
  */
 var gameController = angular.module("gameController", ['sigilService', 'terraService']);
 

@@ -1,18 +1,9 @@
 /**
- * Shamanic Web Application
- * @copyright 2015 Shamanic
+ * Shamanic Web Server
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @author khinds, davidps
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
  */
 
 // dependencies
@@ -30,13 +21,6 @@ var server = express();
 server.set('views', path.join(__dirname, '../ui/html'));
 server.set('view engine', 'ejs');
 
-// global environment settings
-var SiteEnvironment = require('../config/environment.js');
-server.use(function(req,res,next){
-    req.siteEnvironment = SiteEnvironment;
-    next();
-});
-
 // load application resources
 server.use(favicon());
 server.use(logger('dev'));
@@ -47,12 +31,34 @@ server.use('/ui/images',express.static(path.join(__dirname, '../ui/images')));
 server.use('/ui/javascripts',express.static(path.join(__dirname, '../ui/javascripts')));
 server.use('/ui/stylesheets',express.static(path.join(__dirname, '../ui/stylesheets')));
 
-// setup global app settings, cookie parsing sessions, create with application settings keys
-var AppSettings = require('../config/settings.js');
-server.use(cookieParser(AppSettings.sessionKeys.cookieParserKey));
-server.use(session({secret: AppSettings.sessionKeys.sessionKey}));
+/*
+|--------------------------------------------------------------------------
+| Includes / Globals
+|--------------------------------------------------------------------------
+| 
+| Global settings, Database connectivity, helper utilties 
+*/
+
+// global promises
+var promise = require('promise');
 server.use(function(req,res,next){
-    req.appSettings = AppSettings;
+    req.promise = promise;
+    next();
+});
+
+// setup global app settings, cookie parsing sessions, create with application settings keys
+var appSettings = require('../config/settings');
+server.use(cookieParser(appSettings.sessionKeys.cookieParserKey));
+server.use(session({secret: appSettings.sessionKeys.sessionKey}));
+server.use(function(req,res,next){
+    req.appSettings = appSettings;
+    next();
+});
+
+// global environment settings
+var siteEnvironment = require('../config/environment');
+server.use(function(req,res,next){
+    req.siteEnvironment = siteEnvironment;
     next();
 });
 
@@ -66,101 +72,92 @@ server.use(function(req,res,next){
     next();
 });
 
-// generic require logged in user checking for any routes that may require it
-function requireLogin (req, res, next) {
-  if (!req.session.user) {
-    res.redirect('/user/login');
-  } else {
+// include helpers
+var variableHelper = require('./helpers/variables');
+var emailHelper = require('./helpers/email');
+server.use(function(req,res,next){
+    req.variableHelper = variableHelper;
+    req.emailHelper = emailHelper;
     next();
-  }
-};
-
-// check user logged in
-server.use(function (req, res, next) {
-	res.locals.loggedIn =false;
-	  if (req.session.user) {
-		  res.locals.loggedIn =true;
-	  }
-	next();
 });
 
-// determine if the user requesting the page is an admin, for Utils pages
-function isAdmin (req, res, next) {
-    if (!req.session.user.username) {
-        //console.log(req.session.user.username);
-        res.redirect('/');
-    } else {
-        //console.log(req.session.user.username);
-        next();
+// include email service
+var emailService = require("../node_modules/emailjs/email");
+server.use(function(req,res,next){
+    req.emailService = emailService;
+    next();
+});
+
+/*
+|--------------------------------------------------------------------------
+| Models
+|--------------------------------------------------------------------------
+| 
+| Encapsulate system nouns 
+*/
+var userModel = require('./models/users');
+var locationModel = require('./models/locations');
+server.use(function(req,res,next){
+    req.userModel = userModel;
+    req.locationModel = locationModel;
+    
+    // response isLoggedIn global value
+    res.locals.loggedIn =false;
+    if (req.session.user) {
+	  res.locals.loggedIn =true;
     }
-}
+    next();
+});
 
-// find the user's icon from the database
-server.param('basecamp_icon', function(req, res, next, id) {
+/*
+|--------------------------------------------------------------------------
+| Routing
+|--------------------------------------------------------------------------
+| 
+| Public URIs on the system 
+*/
 
-    if(err) {
-        next(err);
-    } else if(req.session.user) {
-        req.basecamp_icon =  basecamp_icon;
-        next();
-    } else {
-        next(new Error('failed to get the user\'s basecamp icon'));
-    }
-
-})
-
-/***************************************************************
- * MAP URLS TO ROUTES
- ***************************************************************/
+// homepage
 var site = require('./controllers/index');
-var game = require('./controllers/game');
-var users = require('./controllers/users');
-var utils = require('./controllers/utilities');
-
-// HOMEPAGE //
 server.get('/', site.index);
 
-// PLAY GAME //
-server.get('/game', requireLogin, game.index);
-server.get('/basecamp', requireLogin, game.basecamp);
-server.get('/threejs', game.threejs);
-server.get('/game/sigils', game.getSigils);
-
-// USERS //
-// login / logout
+// users
+var users = require('./controllers/users');
 server.get('/user/login', users.login);
 server.post('/user/checkLogin', users.checkLogin);
 server.get('/user/logout', users.logout);
 server.get('/user/isLoggedIn', users.isLoggedIn);
-
-// edit account
-server.get('/user/account', requireLogin, users.myaccount);
-server.post('/user/update', requireLogin, users.update);
-
-// create users
+server.get('/user/account', users.requireLogin, users.myaccount);
+server.post('/user/update', users.requireLogin, users.update);
 server.get('/user/signup', users.signup);
 server.post('/user/create', users.create);
 server.post('/user/checkExistingValue', users.checkExistingUserValues);
-
-// forgot login
 server.get('/user/forgot', users.forgot);
 server.post('/user/checkForgot', users.checkForgot);
-
-
-// UTILITIES
-/** Components for Monitoring/Traffic/Maintenance */
-
-// get the list of users / also in JSON format
-server.get('/utilities/getUsers', isAdmin, utils.getUsers);
-server.get('/utilities/getUsersJSON', isAdmin, utils.getUsersJSON);
-
-// user persists location info
 server.post('/user/saveLocation', users.saveLocation);
 server.get('/user/getAltitude', users.getAltitude);
 
-/**************************************************************
- *  ERROR HANDLERS
- **************************************************************/
+//play game
+var game = require('./controllers/game');
+server.get('/game', users.requireLogin, game.index);
+server.get('/basecamp', users.requireLogin, game.basecamp);
+server.get('/threejs', game.threejs);
+server.get('/game/sigils', game.getSigils);
+
+// utilities (Components for Monitoring/Traffic/Maintenance)
+//var utils = require('./controllers/utilities');
+
+// get the list of users / also in JSON format
+//server.get('/utilities/getUsers', users.isAdmin, utils.getUsers);
+//server.get('/utilities/getUsersJSON', users.isAdmin, utils.getUsersJSON);
+
+/*
+|--------------------------------------------------------------------------
+| Error Handling
+|--------------------------------------------------------------------------
+| 
+| HTTP 404, development settings for stack traces 
+*/
 
 // catch 404 and forwarding to error handler
 server.use(function(req, res, next) {
@@ -191,6 +188,12 @@ if (server.get('env') === 'development') {
     });
 }
 
-// export the server
+/*
+|--------------------------------------------------------------------------
+| Export & Run the Application
+|--------------------------------------------------------------------------
+| 
+| HTTP 404, development settings for stack traces 
+*/
 module.exports = server;
 console.log('NodeJS application started...');

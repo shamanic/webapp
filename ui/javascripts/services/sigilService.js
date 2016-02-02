@@ -1,4 +1,10 @@
-
+/**
+ * sigilService 
+ *
+ * @author davidps
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
+ */
 var sigilService = angular.module('sigilService', []);
 
 sigilService.factory('sigilService', ['$http', function($http) {

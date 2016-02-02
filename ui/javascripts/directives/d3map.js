@@ -1,7 +1,9 @@
 /**
  * d3map.js
  * 
- * @author dschmitz (c) shamanic.io, http://www.shamanic.io
+ * @author davidps
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright Shamanic, http://www.shamanic.io
  */
 shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout, sigilService) {
 	  return {
