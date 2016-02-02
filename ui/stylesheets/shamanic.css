@@ -69,7 +69,6 @@ canvas {
   margin:auto;
   width: 10%;
   padding:10px;
-  margin:2px;
   background-color: #000000;
   z-index:5;
   float:right;
@@ -79,7 +78,6 @@ canvas {
   width:10%;
   background-color: #000000;
   padding:10px;
-  margin:2px;
   z-index:5;
   float:right;
 }
@@ -100,11 +98,12 @@ canvas {
 	text-align: center;
 }
 .appear-button a {
-	background: black;
+  margin:auto;
+	background: gold;
 	border: solid 1px #000;
 	color: white;
 	padding: 10px;
-}	
+}
 .appear-button a:hover {
 	background: #555555;
 	-o-transition:.3s;

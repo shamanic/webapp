@@ -35,7 +35,6 @@ exports.login = function(req, res) {
  * 	set secure cookie with the user's info
  */
 exports.checkLogin = function(req, res) {
-	
 	// if results and no errors check the user password against DB and set the user to the session
 	req.userModel.getByUserName(req, req.body.username).then(function(result) {
 		if (req.bcrypt.compareSync(req.body.password, result.password)) {
@@ -187,8 +186,8 @@ exports.getAltitude = function(req, res) {
 	  });
 	  response.on('end', function () {
 		var elevationResponse = JSON.parse(str);
-		altitude = elevationResponse.results[0].elevation
-	    res.render('pages/response', {
+		var altitude = elevationResponse.results[0].elevation;
+    	res.render('pages/response', {
 			response : altitude
 		});
 	  });
@@ -220,7 +219,7 @@ exports.requireLogin = function(req, res, next) {
 	}
 };
 
-//determine if the user requesting the page is an admin, for Utils pages
+// determine if the user requesting the page is an admin, for Utils pages
 exports.isAdmin = function(req, res, next) {
   if (!req.session.user.username) {
       res.redirect('/');

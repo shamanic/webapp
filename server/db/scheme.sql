@@ -8,6 +8,7 @@ CREATE TABLE users
   email character varying(355) NOT NULL,
   created_on timestamp without time zone NOT NULL,
   last_login timestamp without time zone,
+  is_admin boolean NOT NULL,
   CONSTRAINT users_pkey PRIMARY KEY (user_id),
   CONSTRAINT users_email_key UNIQUE (email),
   CONSTRAINT users_username_key UNIQUE (username)
@@ -35,3 +36,19 @@ WITH (
 ALTER TABLE user_locations
   OWNER TO shamanic_user;
 GRANT ALL ON TABLE user_locations TO shamanic_user;
+
+CREATE TABLE users_metadata
+(
+  user_metadata_id serial NOT NULL,
+  user_uuid uuid NOT NULL,
+  current_basecamp_id bigint NOT NULL, --fk to user_locations master table
+  current_location bigint NOT NULL, --fk to user_locations, to determine distance to relevant points
+  CONSTRAINT users_metadata_pkey PRIMARY KEY (user_metadata_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE users_metadata
+  OWNER TO shamanic_user;
+GRANT ALL ON TABLE users_metadata TO shamanic_user;
+

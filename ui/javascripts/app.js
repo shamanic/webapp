@@ -5,7 +5,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright Shamanic, http://www.shamanic.io
  */
-var shamanicWebApp = angular.module('shamanicWebApp', [ 'mm.foundation', 'indexController', 'userControllers', 'gameController', 'menuControllers', 'ngRoute']);
+var shamanicWebApp = angular.module('shamanicWebApp', [ 'mm.foundation', 'indexController', 'userControllers', 'gameController', 'menuControllers', 'utilitiesController', 'ngRoute']);
 
 // Intercept POST requests, convert to standard form encoding
 shamanicWebApp.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
@@ -16,7 +16,7 @@ shamanicWebApp.config(['$routeProvider', '$httpProvider', function($routeProvide
 	    if (data.hasOwnProperty(key)) {
 		if (typeof (data[key]) == "undefined")
 		    data[key] = '';
-		result.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+			result.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
 	    }
 	}
 	return result.join("&");

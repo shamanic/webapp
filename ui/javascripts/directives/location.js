@@ -1,6 +1,6 @@
 /**
  * location.js
- * 	persist to global scope user's current lat/long and elevation to save later 
+ * 	persist user's current lat/long and elevation to global scope, to eventually insert into db
  *
  * @author khinds
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License

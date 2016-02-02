@@ -145,11 +145,12 @@ server.get('/threejs', game.threejs);
 server.get('/game/sigils', game.getSigils);
 
 // utilities (Components for Monitoring/Traffic/Maintenance)
-//var utils = require('./controllers/utilities');
-
-// get the list of users / also in JSON format
-//server.get('/utilities/getUsers', users.isAdmin, utils.getUsers);
-//server.get('/utilities/getUsersJSON', users.isAdmin, utils.getUsersJSON);
+var utils = require('./controllers/utilities');
+server.get('/utilities/locations', isAdmin, utils.locations);
+server.get('/utilities/getUsers', isAdmin, utils.getUsers);
+server.get('/utilities/getUsersJSON', isAdmin, utils.getUsersJSON);
+server.get('/utilities/getLocationsForUser', isAdmin, utils.getLocationsForUser);
+server.get('/utilities/getAllLocations', isAdmin, utils.getAllLocations);
 
 /*
 |--------------------------------------------------------------------------

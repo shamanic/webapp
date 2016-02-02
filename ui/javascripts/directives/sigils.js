@@ -7,7 +7,6 @@
  */
 var scripts = document.getElementsByTagName("script");
 var currentScriptPath = scripts[scripts.length-1].src;
-console.log('script path: ' + currentScriptPath);
 shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 	return {
 		restrict: 'E',
