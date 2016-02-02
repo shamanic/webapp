@@ -4,7 +4,7 @@
 		<div class="login-box">
 			<div class="row">
 				<div class="large-12 columns">
-					<form id="loginform" name="loginform" action="/user/checkLogin" method="post" enctype="application/x-www-form-urlencoded" novalidate>
+					<form id="loginform" name="loginform" action="/user/checkLogin" method="post" enctype="application/x-www-form-urlencoded" ng-submit="submit(loginform.$valid)" novalidate>
 						<fieldset>
 							<legend>Please sign in below</legend>
 							<div class="row">
@@ -15,7 +15,7 @@
 							</div>
 							<div class="row">
 								<div class="large-12 columns">
-									<input type="password" name="password" ng-model="password" placeholder="Password"  required/>
+									<input type="password" name="password" ng-model="password" placeholder="Password" required/>
 									<span class="error" ng-show="showValidationMessages && loginform.password.$error.required">Required</span>
 								</div>
 							</div>

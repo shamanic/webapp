@@ -43,6 +43,9 @@ CREATE TABLE users_metadata
   user_uuid uuid NOT NULL,
   current_basecamp_id bigint NOT NULL, --fk to user_locations master table
   current_location bigint NOT NULL, --fk to user_locations, to determine distance to relevant points
+  --really, the current_location should have to be in another kind of database, in-memory and pushed to
+  --the user_locations table - the idea is to determine relationships between the user's current location and their
+  --marked goals or locations similar to them. etc.
   CONSTRAINT users_metadata_pkey PRIMARY KEY (user_metadata_id)
 )
 WITH (

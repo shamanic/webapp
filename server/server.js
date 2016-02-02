@@ -35,8 +35,8 @@ server.use('/ui/stylesheets',express.static(path.join(__dirname, '../ui/styleshe
 |--------------------------------------------------------------------------
 | Includes / Globals
 |--------------------------------------------------------------------------
-| 
-| Global settings, Database connectivity, helper utilties 
+|
+| Global settings, Database connectivity, helper utilties
 */
 
 // global promises
@@ -92,15 +92,15 @@ server.use(function(req,res,next){
 |--------------------------------------------------------------------------
 | Models
 |--------------------------------------------------------------------------
-| 
-| Encapsulate system nouns 
+|
+| Encapsulate system nouns
 */
 var userModel = require('./models/users');
 var locationModel = require('./models/locations');
 server.use(function(req,res,next){
     req.userModel = userModel;
     req.locationModel = locationModel;
-    
+
     // response isLoggedIn global value
     res.locals.loggedIn =false;
     if (req.session.user) {
@@ -113,13 +113,14 @@ server.use(function(req,res,next){
 |--------------------------------------------------------------------------
 | Routing
 |--------------------------------------------------------------------------
-| 
-| Public URIs on the system 
+|
+| Public URIs on the system
 */
 
 // homepage
 var site = require('./controllers/index');
 server.get('/', site.index);
+server.get('/about', site.about);
 
 // users
 var users = require('./controllers/users');
@@ -146,18 +147,18 @@ server.get('/game/sigils', game.getSigils);
 
 // utilities (Components for Monitoring/Traffic/Maintenance)
 var utils = require('./controllers/utilities');
-server.get('/utilities/locations', isAdmin, utils.locations);
-server.get('/utilities/getUsers', isAdmin, utils.getUsers);
-server.get('/utilities/getUsersJSON', isAdmin, utils.getUsersJSON);
-server.get('/utilities/getLocationsForUser', isAdmin, utils.getLocationsForUser);
-server.get('/utilities/getAllLocations', isAdmin, utils.getAllLocations);
+server.get('/utilities/locations', users.isAdmin, utils.locations);
+server.get('/utilities/getUsers', users.isAdmin, utils.getUsers);
+server.get('/utilities/getUsersJSON', users.isAdmin, utils.getUsersJSON);
+server.get('/utilities/getLocationsForUser', users.isAdmin, utils.getLocationsForUser);
+server.get('/utilities/getAllLocations', users.isAdmin, utils.getAllLocations);
 
 /*
 |--------------------------------------------------------------------------
 | Error Handling
 |--------------------------------------------------------------------------
-| 
-| HTTP 404, development settings for stack traces 
+|
+| HTTP 404, development settings for stack traces
 */
 
 // catch 404 and forwarding to error handler
@@ -193,8 +194,8 @@ if (server.get('env') === 'development') {
 |--------------------------------------------------------------------------
 | Export & Run the Application
 |--------------------------------------------------------------------------
-| 
-| HTTP 404, development settings for stack traces 
+|
+| HTTP 404, development settings for stack traces
 */
 module.exports = server;
 console.log('NodeJS application started...');
