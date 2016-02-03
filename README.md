@@ -3,6 +3,15 @@
 ## Usage
 
 ## Developing
+
+To install dependancies and build UI:
+
+Install "npm package manager" for the command line
+
+$ npm install
+
+$ grunt
+
 Prerequisites:
 
 [VirtualBox](https://www.virtualbox.org/wiki/Downloads)

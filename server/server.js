@@ -27,9 +27,9 @@ server.use(logger('dev'));
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded());
 server.use(cookieParser());
-server.use('/ui/images',express.static(path.join(__dirname, '../ui/images')));
-server.use('/ui/javascripts',express.static(path.join(__dirname, '../ui/javascripts')));
-server.use('/ui/stylesheets',express.static(path.join(__dirname, '../ui/stylesheets')));
+server.use('/ui/img',express.static(path.join(__dirname, '../ui/img')));
+server.use('/ui/js',express.static(path.join(__dirname, '../ui/js')));
+server.use('/ui/css',express.static(path.join(__dirname, '../ui/css')));
 
 /*
 |--------------------------------------------------------------------------
