@@ -18,12 +18,6 @@ module.exports = function(grunt) {
 					},					
 					build : {
 						src : [
-								'node_modules/angular/angular.min.js',
-								'node_modules/angular-route/angular-route.min.js',
-								'node_modules/angular-foundation/mm-foundation-tpls.min.js',
-								'node_modules/topojson/build/topojson.min.js',
-								'node_modules/fastclick/lib/fastclick.js',
-								'node_modules/d3/d3.min.js',
 								'ui/build/angular/app.js',
 								'ui/build/angular/components/gameController.js',
 								'ui/build/angular/components/indexController.js',
@@ -41,6 +35,22 @@ module.exports = function(grunt) {
 								],
 						dest : 'ui/js/app.min.js'
 					}
+				},
+				concat: {
+				  options: {
+					separator: ';'
+				  },
+				  dist: {
+					src: [
+						'node_modules/angular/angular.min.js',
+						'node_modules/angular-route/angular-route.min.js',
+						'node_modules/angular-foundation/mm-foundation-tpls.min.js',
+						'node_modules/topojson/build/topojson.min.js',
+						'node_modules/fastclick/lib/fastclick.js',
+						'node_modules/d3/d3.min.js'
+					],
+					dest: 'ui/js/vendor.min.js'
+				  }
 				},
 				sass : {
 					dist : {
@@ -72,9 +82,10 @@ module.exports = function(grunt) {
 
 	// Load the plugins including the file watcher
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Run all tasks
-	grunt.registerTask('default', [ 'uglify', 'sass', 'cssmin' ]);
+	grunt.registerTask('default', [ 'uglify', 'concat', 'sass', 'cssmin' ]);
 };
