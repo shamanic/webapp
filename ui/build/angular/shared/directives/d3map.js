@@ -1,6 +1,6 @@
 /**
  * D3 Map Directive
- * 
+ *
  * @author davidps
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright Shamanic, http://www.shamanic.io
@@ -119,9 +119,9 @@ shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout
 
 	        function updateGradient() {
 
-	          if ($ === undefined) {
-				return;
-			  }
+	   //        if ($ === undefined) {
+				// return;
+			 //  }
 
 	          var c0_0 = colors[colorIndices[0]];
 	          var c0_1 = colors[colorIndices[1]];
@@ -139,9 +139,9 @@ shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout
 	          var b2 = Math.round(istep * c1_0[2] + step * c1_1[2]);
 	          var color2 = "rgb(" + r2 + "," + g2 + "," + b2 + ")";
 
-	          $('#gradient').css({
+	          d3.select('#gradient').style({
 	            background: "-webkit-gradient(linear, left top, right top, from(" + color1 + "), to(" + color2 + "))"
-	          }).css({
+	          }).style({
 	            background: "-moz-linear-gradient(left, " + color1 + " 0%, " + color2 + " 100%)"
 	          });
 

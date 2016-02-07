@@ -1,5 +1,5 @@
 /**
- * Sigil Service 
+ * Sigil Service
  *
  * @author davidps
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -13,7 +13,7 @@ sigilService.factory('sigilService', ['$http', function($http) {
 
   return {
     getMapSimple: function() {
-      return $http.get('http://bost.ocks.org/mike/map/uk.json');
+      return $http.get('https://bost.ocks.org/mike/map/uk.json');
       // .success(function(data) {
       //   return data;
       // })
