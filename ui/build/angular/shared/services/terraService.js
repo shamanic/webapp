@@ -1,5 +1,5 @@
 /**
- * Terra Service 
+ * Terra Service
  *
  * @author khinds
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -11,8 +11,8 @@ terraService.factory('terraService', ['$window', '$timeout', function(win, $time
   var cyclic = {};
   $timeout(function() {
 
-    width = $("svg#gradient").width();
-    height = $("svg#gradient").height();
+    width = d3.select("svg#gradient").attr("width");
+    height = d3.select("svg#gradient").attr("height");
     cyclic = new terra.Terrarium((width / 10), (height / 10), {
       "id":"terraCycle",
       cellSize: width / 100,
@@ -21,20 +21,13 @@ terraService.factory('terraService', ['$window', '$timeout', function(win, $time
     });
     cyclic.grid = cyclic.makeGrid('cyclic');
     cyclic.animate();
-    //console.log('cyclic w&h: ' + cyclic.width + ', ' + cyclic.height);
-    //console.log('element gradient width&height: ' + $("svg#gradient").width() + ', ' + $("svg#gradient").height());
+
   }, 5000);
-
-    //width = 100;
-
-    // height = 100;
-
 
   var cycles = [];
 
   cycles.push(cyclic);
 
-  // var msgs = [];
   return function() {
     terra.registerCA({
     type: 'cyclic',

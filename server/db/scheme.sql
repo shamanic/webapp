@@ -55,3 +55,21 @@ ALTER TABLE users_metadata
   OWNER TO shamanic_user;
 GRANT ALL ON TABLE users_metadata TO shamanic_user;
 
+
+CREATE TABLE sigils
+(
+  sigil_id serial NOT NULL,
+  sigil_uuid NOT NULL,
+  user_uuid uuid NOT NULL,
+  sigil_location bigint NULL, --location on map, eventually this may need to be expanded to include areas / geometries
+  name character varying(200) NULL,
+  url character varying(500) NULL,
+  CONSTRAINT sigils_pkey PRIMARY KEY (sigil_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE sigils
+  OWNER TO shamanic_user;
+GRANT ALL ON TABLE sigils TO shamanic_user;
+)

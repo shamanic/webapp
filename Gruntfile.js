@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 					options : {
 						banner : '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
 						mangle : false
-					},					
+					},
 					build : {
 						src : [
 								'ui/build/angular/app.js',
@@ -30,8 +30,11 @@ module.exports = function(grunt) {
 								'ui/build/angular/shared/directives/location.js',
 								'ui/build/angular/shared/directives/scroll.js',
 								'ui/build/angular/shared/directives/sigils.js',
+								'ui/build/angular/shared/directives/grid.js',
+								'ui/build/angular/shared/directives/zoom.js',
 								'ui/build/angular/shared/services/sigilService.js',
 								'ui/build/angular/shared/services/terraService.js',
+								'ui/build/angular/shared/clientModels/Sigils/Sigil.js',
 								],
 						dest : 'ui/js/app.min.js'
 					}
@@ -71,11 +74,18 @@ module.exports = function(grunt) {
 					},
 					target : {
 						files : {
-							'ui/css/font-awesome.min.css' : [ 'node_modules/font-awesome/css/font-awesome.min.css' ],					
+							'ui/css/font-awesome.min.css' : [ 'node_modules/font-awesome/css/font-awesome.min.css' ],
 							'ui/css/foundation.min.css' : [ 'ui/css/foundation.css' ],
 							'ui/css/normalize.min.css' : [ 'ui/css/normalize.css' ],
 							'ui/css/main.min.css' : [ 'ui/css/main.css' ]
 						}
+					}
+				},
+				watch: {
+					livereload: {
+						options: { livereload: true },
+						files: ['**/*'],
+						tasks: ['default']
 					}
 				}
 			});
@@ -85,6 +95,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// Run all tasks
 	grunt.registerTask('default', [ 'uglify', 'concat', 'sass', 'cssmin' ]);

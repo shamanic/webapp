@@ -8,7 +8,7 @@
 shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout, sigilService) {
 	  return {
 	    restrict: 'E',
-		  templateUrl: 'ui/js/views/mapPartial.html',
+		  template: '<div class="d3map"></div>',
 	    scope: {
 	      data: '='
 	    },
@@ -55,23 +55,19 @@ shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout
 	          console.log('failure communicating w sigilService.getMap API: ' + errPayload);
 	      });
 
-	      var topology = {
-	        type: "Topology",
-	        transform: {scale: [1, 1], translate: [0, 0]},
-	        objects: {foo: {type: "Polygon", arcs: [[0]]}, bar: {type: "Polygon", arcs: [[0, 1]]}},
-	        arcs: [[[0, 0], [1, 1]], [[1, 1], [-1, -1]]]
-	      };
+	      // var topology = {
+	      //   type: "Topology",
+	      //   transform: {scale: [1, 1], translate: [0, 0]},
+	      //   objects: {foo: {type: "Polygon", arcs: [[0]]}, bar: {type: "Polygon", arcs: [[0, 1]]}},
+	      //   arcs: [[[0, 0], [1, 1]], [[1, 1], [-1, -1]]]
+	      // };
 
-	      var arcs = topojson.feature(topology, topology.objects.foo);
+	      // var arcs = topojson.feature(topology, topology.objects.foo);
 
-	      svg.append("circle")
-	         .attr("cx", 30)
-	         .attr("cy", 80)
-	         .attr("r", 20);
-
-	      // scope.$watch('data', function(newVal) {
-	      //   if(newVal) { var subunits = topojson.feature(scope.ukTopology, scope.ukTopology.objects.subunits); }
-	      // }, true);
+	      // svg.append("circle")
+	      //    .attr("cx", 30)
+	      //    .attr("cy", 80)
+	      //    .attr("r", 20);
 
 	      /*
 	      from http://bl.ocks.org/biovisualize/2322933

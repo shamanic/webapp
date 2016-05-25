@@ -21,7 +21,7 @@ shamanicWebApp.directive('appearButton', function() {
 				$http({
 				  method: 'POST',
 				  url: '/user/saveLocation',
-				  data: { lat: window.latitude, long: window.latitude, elevation : window.elevation }
+				  data: { lat: window.latitude, long: window.longitude, elevation : window.elevation }
 				}).then(function successCallback(response) {
 					if (response.data == "saved") {
 						$scope.message = 'Location Saved';
@@ -30,7 +30,7 @@ shamanicWebApp.directive('appearButton', function() {
 					$scope.message = 'Location could not be saved';
 				});
 			}
-			
+
 			// show button if they user is logged in
 			$scope.showThisButton = false;
 			$http({
