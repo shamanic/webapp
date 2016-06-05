@@ -17,7 +17,7 @@ exports.getByUserName = function(req, userName) {
       }
       return resolve(result);
     });
-  });	
+  });
 }
 
 /**
@@ -40,13 +40,14 @@ exports.getByEmail = function(req, emailAddress) {
 exports.checkNameValueExists = function(req, name, value) {
 	// @todo have this query escaped safely from SQL injection attempts
 	return new req.promise(function (resolve, reject) {
-		req.db.fetchRow('SELECT * FROM users WHERE ' + name + '=\'' + value + '\'', function(err, result) {
+    req.db.fetchRow(`SELECT * FROM users WHERE ${name} = \'${value}\'`, function(err, result) {
+		//req.db.fetchRow('SELECT * FROM users WHERE ' + name + '=\'' + value + '\'', function(err, result) {
 			if (err) {
 				return reject(err);
 			}
 			return resolve(result);
 		});
-	});	
+	});
 }
 
 /**
@@ -63,7 +64,7 @@ exports.updateNameAndPassword  = function(req, fullname, password) {
 			}
 			return resolve(true);
 		});
-	});	
+	});
 }
 
 /**
@@ -117,10 +118,10 @@ exports.createNew = function(req) {
         return reject(err);
       }
       return resolve();
-    }); 
+    });
   });
 }
 
 exports.isAdmin = function() {
-	
+
 }

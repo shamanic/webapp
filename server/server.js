@@ -90,16 +90,18 @@ server.use(function(req,res,next){
 
 /*
 |--------------------------------------------------------------------------
-| Models
+| Models & Repositories
 |--------------------------------------------------------------------------
 |
 | Encapsulate system nouns
 */
 var userModel = require('./models/users');
 var locationModel = require('./models/locations');
+var sigilRepo = require('./db/sigilRepository');
 server.use(function(req,res,next){
     req.userModel = userModel;
     req.locationModel = locationModel;
+    req.sigilRepo = sigilRepo;
 
     // response isLoggedIn global value
     res.locals.loggedIn =false;
@@ -136,14 +138,19 @@ server.post('/user/checkExistingValue', users.checkExistingUserValues);
 server.get('/user/forgot', users.forgot);
 server.post('/user/checkForgot', users.checkForgot);
 server.post('/user/saveLocation', users.saveLocation);
+server.post('/user/assignNewBasecamp', users.assignNewBasecamp);
+server.post('/user/updateBasecamp', users.updateBasecamp);
 server.get('/user/getAltitude', users.getAltitude);
 
-//play game
+// play game
 var game = require('./controllers/game');
 server.get('/game', users.requireLogin, game.index);
 server.get('/basecamp', users.requireLogin, game.basecamp);
+server.get('/game/basecamp/:id', game.getBasecampById);
 server.get('/threejs', game.threejs);
-server.get('/game/sigils', game.getSigils);
+server.get('/game/sigils', sigilRepo.getSigilsTest);
+server.get('/game/userSigils/:username', game.getSigilsForUser);
+server.get('/grid', game.grid);
 
 // utilities (Components for Monitoring/Traffic/Maintenance)
 var utils = require('./controllers/utilities');
@@ -152,6 +159,7 @@ server.get('/utilities/getUsers', users.isAdmin, utils.getUsers);
 server.get('/utilities/getUsersJSON', users.isAdmin, utils.getUsersJSON);
 server.get('/utilities/getLocationsForUser', users.isAdmin, utils.getLocationsForUser);
 server.get('/utilities/getAllLocations', users.isAdmin, utils.getAllLocations);
+server.get('/utilities/getBasecampsJSON', users.isAdmin, utils.getBasecampsJSON);
 
 /*
 |--------------------------------------------------------------------------
@@ -163,7 +171,7 @@ server.get('/utilities/getAllLocations', users.isAdmin, utils.getAllLocations);
 
 // catch 404 and forwarding to error handler
 server.use(function(req, res, next) {
-    var err = new Error('HTTP 404 Page can not be found.');
+    var err = new Error('HTTP 404 - Page cannot be found.');
     err.status = 404;
     next(err);
 });

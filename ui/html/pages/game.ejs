@@ -1,12 +1,26 @@
 <% include ../partials/header %>
+<script>
+  window.username = '<%=username%>';
+</script>
+<%=username%>
 <div class='main-container' ng-controller='gameController'>
-  <div id="stuffFromDavid">
+  <div id="buttonsDiv">
     <button id="getSigilButton" ng-click="showSigils = !showSigils;">Get Sigils</button>
+    <zoom-button type="button"></zoom-button>
     <button id="generateTerraCycleButton" ng-click="terrafy();">TerraCycle</button>
-    <sigil-gallery images="imageList" ng-show="showSigils"></sigil-gallery>
-    <sigil-gallery images="restImageList" ng-show="showSigils">REST_sigils</sigil-gallery>
-    <d3-Map data="mapData" id="d3-Map"></d3-Map>
-    <basecamp image="basecamp_icon"></basecamp>
+    <button id="ngScopedZoomButton" ng-click="zoomButtonClicked();">Zoom</button>
+    <basecamp-button type="button"/>
+  </div>
+  <div id="stuffFromDavid">
+    <div id="xAndy">
+      X: {{X}}
+      Y: {{Y}}
+    </div>
+    <grid style="display:none"></grid>
+    <sigil-gallery images="userImageList" ng-show="showSigils">User-Specific Sigils!</sigil-gallery>
+    <!-- <sigil-gallery images="restImageList" ng-show="showSigils">REST_sigils</sigil-gallery>
+    -->
+    <d3-Map data="mapData" id="d3-Map" ng-click="xAndyTracker($event)"></d3-Map>
     <div id="svgAnchor"></div>
   </div>
   <div id="stuffFromKevin">

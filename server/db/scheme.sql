@@ -1,13 +1,13 @@
 CREATE TABLE users
 (
-  user_id serial NOT NULL,
-  uuid uuid,
+  id serial NOT NULL,
+  uuid uuid NOT NULL,
   fullname character varying(100) NOT NULL,
   username character varying(50) NOT NULL,
   password character varying(100) NOT NULL,
   email character varying(355) NOT NULL,
   created_on timestamp without time zone NOT NULL,
-  last_login timestamp without time zone,
+  last_login timestamp without time zone, --nullable, by default - other nullable columns follow as '[name] [datatype]'
   is_admin boolean NOT NULL,
   CONSTRAINT users_pkey PRIMARY KEY (user_id),
   CONSTRAINT users_email_key UNIQUE (email),
@@ -22,8 +22,9 @@ GRANT ALL ON TABLE users TO shamanic_user;
 
 CREATE TABLE user_locations
 (
-  location_id serial NOT NULL,
-  user_uuid uuid NOT null,
+  id serial NOT NULL,
+  user_uuid uuid NOT null, --there is some idea that there can or should be a way to have a location which is not
+                            --tied to any particular user - a "system_uuid" perhaps, if we leave these as NOT NULL
   created_on timestamp without time zone NOT NULL,
   longitude float8,
   latitude float8,
@@ -39,9 +40,9 @@ GRANT ALL ON TABLE user_locations TO shamanic_user;
 
 CREATE TABLE users_metadata
 (
-  user_metadata_id serial NOT NULL,
+  id serial NOT NULL,
   user_uuid uuid NOT NULL,
-  current_basecamp_id bigint NOT NULL, --fk to user_locations master table
+  current_basecamp_id bigint, --fk to locations_metadata table where is_basecamp = true (nullable for "nomadic mode")
   current_location bigint NOT NULL, --fk to user_locations, to determine distance to relevant points
   --really, the current_location should have to be in another kind of database, in-memory and pushed to
   --the user_locations table - the idea is to determine relationships between the user's current location and their
@@ -55,15 +56,35 @@ ALTER TABLE users_metadata
   OWNER TO shamanic_user;
 GRANT ALL ON TABLE users_metadata TO shamanic_user;
 
+CREATE TABLE locations_metadata
+(
+  id serial NOT NULL,
+  user_locations_id bigint NOT NULL, --fk to user_locations master table
+  user_uuid uuid NOT NULL,
+  is_basecamp boolean NOT NULL,
+  assigned_basecamp_on timestamp without time zone,
+  number_of_users bigint, --tracks how many users have hit this point
+  average_time_between_locations interval, --how long on average each point is updated (this kind of data can be used
+                                           --to guess how people are moving around, perhaps.) could also be calculated
+  basecamp_icon_url character varying(500),
+  CONSTRAINT users_metadata_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE locations_metadata
+  OWNER TO shamanic_user;
+GRANT ALL ON TABLE locations_metadata TO shamanic_user;
+
 
 CREATE TABLE sigils
 (
   sigil_id serial NOT NULL,
-  sigil_uuid NOT NULL,
+  sigil_uuid uuid NOT NULL,
   user_uuid uuid NOT NULL,
-  sigil_location bigint NULL, --location on map, eventually this may need to be expanded to include areas / geometries
-  name character varying(200) NULL,
-  url character varying(500) NULL,
+  sigil_location bigint, --location on map, eventually this may need to be expanded to include areas / geometries
+  name character varying(200),
+  url character varying(500),
   CONSTRAINT sigils_pkey PRIMARY KEY (sigil_id)
 )
 WITH (

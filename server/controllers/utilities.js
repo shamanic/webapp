@@ -9,7 +9,10 @@ exports.locations = function(req, res) {
  * get list of users
  */
 exports.getUsers = function(req, res) {
-
+  req.db.fetchAll('SELECT * FROM users', function(err, result) {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(result);
+  });
 }
 
 /**
@@ -24,7 +27,7 @@ exports.getUsersJSON = function(req, res) {
 }
 
 exports.getLocationsForUser = function(req, res) {
-  req.db.fetchAll('SELECT * FROM user_locations WHERE user_uuid = \'' + req.session.user.uuid + '\'', function(err, result) {
+  req.db.fetchAll(`SELECT * FROM user_locations WHERE user_uuid = \'${req.session.user.uuid}\'`, function(err, result) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     var json = JSON.stringify(result);
     res.end(json);
@@ -37,4 +40,17 @@ exports.getAllLocations = function(req, res) {
     var json = JSON.stringify(result);
     res.end(json);
   });
+}
+
+exports.getBasecampsJSON = function(req, res) {
+  req.db.fetchAll(`SELECT l.user_locations_id
+                   FROM locations_metadata AS l
+                   INNER JOIN users ON
+                    (users.uuid = locations_metadata.user_uuid
+                    AND locations_metadata.is_basecamp = true)`,
+    function(err, result) {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      var json = JSON.stringify(result);
+      res.end(json);
+    });
 }

@@ -1,13 +1,13 @@
 /**
- * Sigil Service
+ * Game Asset Service
  *
  * @author davidps
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright Shamanic, http://www.shamanic.io
  */
-var sigilService = angular.module('sigilService', []);
+var gameAssetService = angular.module('gameAssetService', []);
 
-sigilService.factory('sigilService', ['$http', function($http) {
+gameAssetService.factory('gameAssetService', ['$http', function($http) {
 //return $http.get('http://overpass-api.de/api/interpreter?data=[out:json];(node(51.249,7.148,51.251,7.152);<;);out;')
   var basecamp_icon = window.fullname;
 

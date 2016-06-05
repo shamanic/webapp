@@ -5,11 +5,11 @@
   	window.fullname = '<%=fullname%>';
   </script>
 	Welcome <%=username%>! <br/><br/>
-	<a class="tiny button" ng-click="showAccountForm = !showAccountForm">Manage Account</a><br/>
-	<div ng-show='showUpdateMessage'>{{updateMessage}}</div><br/>	
+	<a class="button" ng-click="showAccountForm = !showAccountForm">Manage Account</a><br/>
+	<div ng-show='showUpdateMessage'>{{showUpdateMessage}}</div><br/>
 	<div class="row" ng-show='showAccountForm'>
 		<div class="six columns">
-			<form class="custom" id="updateAccountForm" name="updateAccountForm" action="/user/update" method="post" enctype="application/x-www-form-urlencoded" novalidate>			
+			<form class="custom" id="updateAccountForm" name="updateAccountForm" action="/user/update" method="post" enctype="application/x-www-form-urlencoded" novalidate>
 				<fieldset>
 					<legend>Update Information</legend>
 					<input id="fullname" type="text" name="fullname" ng-model="fullname" placeholder="Full Name" required>

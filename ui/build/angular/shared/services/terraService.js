@@ -6,7 +6,7 @@
  * @copyright Shamanic, http://www.shamanic.io
  */
 var terraService = angular.module('terraService',[]);
-terraService.factory('terraService', ['$window', '$timeout', function(win, $timeout) {
+terraService.factory('terraService', ['$window', '$timeout', function($window, $timeout) {
   var width, height;
   var cyclic = {};
   $timeout(function() {

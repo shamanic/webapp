@@ -5,25 +5,42 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright Shamanic, http://www.shamanic.io
  */
-shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout, sigilService) {
+shamanicWebApp.directive('d3Map', ['gameAssetService', function(gameAssetService) {
 	  return {
 	    restrict: 'E',
 		  template: '<div class="d3map"></div>',
 	    scope: {
-	      data: '='
+	      data: '=',
+	      zoomEnabled: '=d3Map'
 	    },
 	    link: function(scope, element, attributes) {
+				// ,
+	   		//    eventHandler: '&ngMousemove'
+	   		// ng-mousemove="eventHandler()"
 
-	      var width = 600, height = 800;
+	      //console.log('elem: ' + JSON.stringify(element[0]));
 
-	      var svg = d3.select(".main-container").append("svg")
+	      var width = document.body.clientWidth - 160, height = document.body.clientHeight - 160;
+	      // var width = element[0].offsetWidth, height = element[0].offsetHeight;
+
+
+	      var svg = d3.select("d3-map").append("svg")
 	        .attr("width", width)
-	        .attr("height", height)
-	        .call(d3.behavior.zoom().on("zoom", redraw));
+	        .attr("height", height);
+
+	      // svg.attr("ng-mousemove", "xAndyTracker($event)");
+	      // svg.attr("ng-mousemove", "xAndyTracker($event)");
+	      svg.call(d3.behavior.zoom().on("zoom", redraw));
+
+
+	      if(scope.zoomEnabled) {
+        	console.log("zoomEnabled...");
+        	svg.call(d3.behavior.zoom().on("zoom", redraw));
+        };
 
 	      svg.append("rect")
 	        .attr("fill", function(d) {
-	          return bgColors();
+	          //return bgColors();
 	        });
 	      d3.selectAll("svg").attr("id", "gradient");
 
@@ -39,10 +56,10 @@ shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout
 	      var path = d3.geo.path().projection(projection);
 
 	      var t = projection.translate(); // the projection's default translation
-	      var s = projection.scale() // the projection's default scale
+	      var s = projection.scale(); // the projection's default scale
 	      var subunits = {};
 
-	      var promise = sigilService.getMapSimple();
+	      var promise = gameAssetService.getMapSimple();
 	      promise.then(
 	        function(payload) {
 	          scope.ukTopology = payload.data;
@@ -52,22 +69,13 @@ shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout
 	            .attr("d", path);
 	        },
 	        function(errPayload) {
-	          console.log('failure communicating w sigilService.getMap API: ' + errPayload);
+	          console.log('failure communicating w gameAssetService.getMap API: ' + errPayload);
 	      });
-
-	      // var topology = {
-	      //   type: "Topology",
-	      //   transform: {scale: [1, 1], translate: [0, 0]},
-	      //   objects: {foo: {type: "Polygon", arcs: [[0]]}, bar: {type: "Polygon", arcs: [[0, 1]]}},
-	      //   arcs: [[[0, 0], [1, 1]], [[1, 1], [-1, -1]]]
+	      // document.getElementsByTagName("svg").onmousemove = function() {
+	      // 	console.log('x: ' + e.PageX);
+	      // 	document.getElementById("xes").innerHTML = JSON.stringify(e.PageX);
+	      // 	document.getElementById("yes").innerHTML = JSON.stringify(e.PageY);
 	      // };
-
-	      // var arcs = topojson.feature(topology, topology.objects.foo);
-
-	      // svg.append("circle")
-	      //    .attr("cx", 30)
-	      //    .attr("cy", 80)
-	      //    .attr("r", 20);
 
 	      /*
 	      from http://bl.ocks.org/biovisualize/2322933
@@ -114,10 +122,6 @@ shamanicWebApp.directive('d3Map', ['$timeout', 'sigilService', function($timeout
 	        var gradientSpeed = 0.002;
 
 	        function updateGradient() {
-
-	   //        if ($ === undefined) {
-				// return;
-			 //  }
 
 	          var c0_0 = colors[colorIndices[0]];
 	          var c0_1 = colors[colorIndices[1]];

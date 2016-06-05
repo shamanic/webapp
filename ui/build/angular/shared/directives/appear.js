@@ -9,9 +9,9 @@
 shamanicWebApp.directive('appearButton', function() {
 	return {
 		restrict: 'E',
-        scope: {
-        	type:'@'
-        },
+    scope: {
+      type:'@'
+    },
 		template: '<span ng-show="showThisButton" ng-class="appearButtonClass" ng-click="saveLocation()"><a>{{message}}</a></span>',
 		controller:function($scope, $http){
 

@@ -2,3 +2,4 @@
 **/Vagrantfile
 **/build.sh
 scratch/*
+.DS_Store

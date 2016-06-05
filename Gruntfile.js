@@ -26,15 +26,17 @@ module.exports = function(grunt) {
 								'ui/build/angular/components/utilitiesController.js',
 								'ui/build/angular/shared/controllers/navigation.js',
 								'ui/build/angular/shared/directives/appear.js',
+								'ui/build/angular/shared/directives/basecamp.js',
 								'ui/build/angular/shared/directives/d3map.js',
 								'ui/build/angular/shared/directives/location.js',
 								'ui/build/angular/shared/directives/scroll.js',
 								'ui/build/angular/shared/directives/sigils.js',
 								'ui/build/angular/shared/directives/grid.js',
 								'ui/build/angular/shared/directives/zoom.js',
-								'ui/build/angular/shared/services/sigilService.js',
+								'ui/build/angular/shared/services/gameAssetService.js',
 								'ui/build/angular/shared/services/terraService.js',
 								'ui/build/angular/shared/clientModels/Sigils/Sigil.js',
+								'ui/build/angular/shared/clientModels/Basecamp/Basecamp.js'
 								],
 						dest : 'ui/js/app.min.js'
 					}

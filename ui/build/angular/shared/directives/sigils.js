@@ -10,7 +10,6 @@ var currentScriptPath = scripts[scripts.length-1].src;
 shamanicWebApp.directive('sigilGallery', function($interval, $window) {
 	return {
 		restrict: 'E',
-		// templateUrl: currentScriptPath.replace('gameDirectives.js', 'sigilPartial.html'),
     templateUrl: 'ui/js/views/sigilPartial.html',
 		scope: {
 			images: '='
