@@ -7,9 +7,10 @@
  * @copyright Shamanic, http://www.shamanic.io
  */
 var utilitiesController = angular.module("utilitiesController", []);
+
 utilitiesController.controller("statsController", ['$scope', '$http', function($scope, $http) {
-  var promise = $http.get('/utilities/getAllLocations');
-  promise.then(function(payload) {
+  $http.get('/utilities/getAllLocations')
+  .then(function(payload) {
     $scope.locations = payload.data;
   },
   function(errPayload) {

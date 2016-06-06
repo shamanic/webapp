@@ -43,14 +43,9 @@ exports.getAllLocations = function(req, res) {
 }
 
 exports.getBasecampsJSON = function(req, res) {
-  req.db.fetchAll(`SELECT l.user_locations_id
-                   FROM locations_metadata AS l
-                   INNER JOIN users ON
-                    (users.uuid = locations_metadata.user_uuid
-                    AND locations_metadata.is_basecamp = true)`,
-    function(err, result) {
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      var json = JSON.stringify(result);
-      res.end(json);
-    });
+  req.db.fetchAll('SELECT locations_metadata.* FROM locations_metadata INNER JOIN users ON (users.uuid = locations_metadata.user_uuid AND locations_metadata.is_basecamp = true)', function(err, result) {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    var json = JSON.stringify(result);
+    res.end(json);
+  });
 }
