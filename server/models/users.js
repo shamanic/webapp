@@ -41,7 +41,6 @@ exports.checkNameValueExists = function(req, name, value) {
 	// @todo have this query escaped safely from SQL injection attempts
 	return new req.promise(function (resolve, reject) {
     req.db.fetchRow(`SELECT * FROM users WHERE ${name} = \'${value}\'`, function(err, result) {
-		//req.db.fetchRow('SELECT * FROM users WHERE ' + name + '=\'' + value + '\'', function(err, result) {
 			if (err) {
 				return reject(err);
 			}
@@ -122,6 +121,9 @@ exports.createNew = function(req) {
   });
 }
 
+/**
+ * determine if a user is an admin
+ */
 exports.isAdmin = function() {
 
 }

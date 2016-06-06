@@ -145,12 +145,12 @@ server.get('/user/getAltitude', users.getAltitude);
 // play game
 var game = require('./controllers/game');
 server.get('/game', users.requireLogin, game.index);
-server.get('/basecamp', users.requireLogin, game.basecamp);
+server.get('/game/basecamp', users.requireLogin, game.basecamp);
 server.get('/game/basecamp/:id', game.getBasecampById);
-server.get('/threejs', game.threejs);
+server.get('/game/threejs', game.threejs);
 server.get('/game/sigils', sigilRepo.getSigilsTest);
 server.get('/game/userSigils/:username', game.getSigilsForUser);
-server.get('/grid', game.grid);
+server.get('/game/grid', game.grid);
 
 // utilities (Components for Monitoring/Traffic/Maintenance)
 var utils = require('./controllers/utilities');

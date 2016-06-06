@@ -1,7 +1,7 @@
 /**
  * Model for locations in the system
  *
- * @author khinds
+ * @author khinds, dpshcmitz
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright Shamanic, http://www.shamanic.io
  */
@@ -41,6 +41,9 @@ exports.addBasecamp = function(req, location) {
   });
 }
 
+/**
+ * get a current basecamp for user
+ */
 exports.getCurrentBasecamp = function(req) {
   return new req.promise(function(resolve, reject) {
     req.db.fetchRow('SELECT * FROM locations_metadata WHERE user_uuid = ? AND is_basecamp = true', [req.session.user.uuid], function(err, result) {
