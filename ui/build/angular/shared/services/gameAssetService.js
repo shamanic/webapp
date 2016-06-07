@@ -38,11 +38,12 @@ gameAssetService.factory('gameAssetService', ['$http', function($http) {
 
     },
     getBasecampLocation: function() {
+        console.log('inside getBasecamp location: ' + basecamp_icon);
       return $http.get('game/basecamp/' + basecamp_icon//,
         //{params: { user_id: user.id }
       //}
       );
-      console.log('inside getBasecamp location: ' + basecamp_icon);
+      
     }
-  }
+  };
 }]);

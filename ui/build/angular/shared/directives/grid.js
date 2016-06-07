@@ -51,5 +51,5 @@ shamanicWebApp.directive('grid', function() {
                 // TODO: This is enormously complicated.. or at least, requires a lot of code.
             }
         }
-    }
+    };
 });

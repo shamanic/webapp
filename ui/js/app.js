@@ -47,7 +47,8 @@ gameController.controller("gameController", [ '$scope', '$routeParams', 'gameAss
 	$scope.xAndyTracker = function(ev) {
 		$scope.X = ev.offsetX;
 		$scope.Y = ev.offsetY;
-	}
+	};
+	
 	$scope.fireClick = function(event) {
         $scope.X = event.offsetX;
         $scope.Y = event.offsetY;
@@ -57,11 +58,11 @@ gameController.controller("gameController", [ '$scope', '$routeParams', 'gameAss
 	$scope.zoomButtonClicked = function() {
 		$scope.zoomEnabled = !$scope.zoomEnabled;
 		console.log('clicked zoomButton, zoomEnabled: ' + $scope.zoomEnabled);
-	}
+	};
 
 	$scope.terrafy = function() {
 		terraService();
-	}
+	};
 
 	ctrl.sigilpack = new Sigil($scope.username);
 
@@ -169,7 +170,7 @@ userControllers.controller("loginController", [ '$scope', '$http', function($sco
 				    $scope.userNotFound = true;
 				    return;
 			    }
-			    window.location = "/user/account"
+			    window.location = "/user/account";
 		    }, function(response) {
 			    isFormValid = false;
 		    });
@@ -213,7 +214,7 @@ userControllers.controller("signupController", [ '$scope', '$http', function($sc
 						value : value
 					}
 				}).then(function(response) {
-					if (response.data == 'value exists') {
+					if (response.data === 'value exists') {
 						if (key == 'email') {
 							$scope.showEmailTakenError = true;
 						} else {
@@ -223,7 +224,7 @@ userControllers.controller("signupController", [ '$scope', '$http', function($sc
 					}
 
 					// submit the create user form after the 2nd validation has finished
-					if (key == 'username' && isFormValid) {
+					if (key === 'username' && isFormValid) {
 						document.forms.signupform.submit();
 					}
 
@@ -294,11 +295,11 @@ userControllers.controller("forgotController", [ '$scope', '$http', function($sc
 		$scope.userNotFound = false;
 
 		// if they didn't put anything in the fields, then we're not found
-		if ((typeof($scope.username) == 'undefined' || $scope.username == '') && (typeof($scope.email) == 'undefined' || $scope.email == '')) {
+		if ((typeof($scope.username) === 'undefined' || $scope.username === '') && (typeof($scope.email) === 'undefined' || $scope.email === '')) {
 			$scope.userNotFound = true;
 			isFormValid = false;
 		}
-
+		
 		// if valid form, check if the user account exists for given email or username
 		if (isFormValid) {
 		    $http({
@@ -383,7 +384,7 @@ shamanicWebApp.directive('appearButton', function() {
 				}, function errorCallback(response) {
 					$scope.message = 'Location could not be saved';
 				});
-			}
+			};
 
 			// show button if they user is logged in
 			$scope.showThisButton = false;
@@ -414,7 +415,7 @@ shamanicWebApp.directive('basecampButton', function() {
     controller: function($scope, $http) {
       $scope.showThisButton = true;
 
-      if($scope.basecampObj == null || $scope.basecampObj == undefined) {
+      if($scope.basecampObj === null || $scope.basecampObj === undefined) {
         $scope.message = "you haven\'t assigned a basecamp yet. Do so now?";
       } else {
         $scope.message = "Change Basecamp";
@@ -458,7 +459,7 @@ shamanicWebApp.directive('basecampButton', function() {
           // });
         }
 
-      }
+      };
 
       //more controller logic
     },
@@ -468,8 +469,9 @@ shamanicWebApp.directive('basecampButton', function() {
         scope.basecampButtonClass = 'basecamp-button';
       }
     }
-  }
+  };
 });
+
 /**
  * D3 Map Directive
  *
@@ -508,7 +510,7 @@ shamanicWebApp.directive('d3Map', ['gameAssetService', function(gameAssetService
 	      if(scope.zoomEnabled) {
         	console.log("zoomEnabled...");
         	svg.call(d3.behavior.zoom().on("zoom", redraw));
-        };
+          }
 
 	      svg.append("rect")
 	        .attr("fill", function(d) {
@@ -629,7 +631,7 @@ shamanicWebApp.directive('d3Map', ['gameAssetService', function(gameAssetService
 	          }
 	        }
 	        setInterval(updateGradient, 10);
-	      };
+	      }
 	      function transition(path) {
 	        path.transition()
 	          .duration(7500)
@@ -637,16 +639,16 @@ shamanicWebApp.directive('d3Map', ['gameAssetService', function(gameAssetService
 	          .each("end", function() {
 	            d3.select(this).call(transition);
 	          });
-	      };
+	      }
 	      function tweenDash() {
 	        var l = this.getTotalLength(),
 	          i = d3.interpolateString("0," + l, l + "," + l);
 	        return function(t) {
 	          return i(t);
-	        }
-	      };
+	        };
+	      }
 	    }
-	  }
+	  };
 }]);
 
 shamanicWebApp.directive('grid', function() {
@@ -702,7 +704,7 @@ shamanicWebApp.directive('grid', function() {
                 // TODO: This is enormously complicated.. or at least, requires a lot of code.
             }
         }
-    }
+    };
 });
 
 /**
@@ -726,7 +728,7 @@ shamanicWebApp.directive('locationTracker', function() {
 					}).then(function successCallback(response) {
 						window.elevation = response.data;
 				}, function errorCallback(response) {});
-		    }
+		    };
 		    if (navigator.geolocation) {
 		    	navigator.geolocation.getCurrentPosition($scope.savePosition);
 		    }
@@ -873,13 +875,14 @@ gameAssetService.factory('gameAssetService', ['$http', function($http) {
 
     },
     getBasecampLocation: function() {
+        console.log('inside getBasecamp location: ' + basecamp_icon);
       return $http.get('game/basecamp/' + basecamp_icon//,
         //{params: { user_id: user.id }
       //}
       );
-      console.log('inside getBasecamp location: ' + basecamp_icon);
+      
     }
-  }
+  };
 }]);
 
 /**
@@ -936,7 +939,7 @@ terraService.factory('terraService', ['$window', '$timeout', function($window, $
   //    win.alert(msgs.join("\n"));
   //    msgs = [];
   //  };
- }
+ };
 }]);
 
 var Basecamp = angular.module('Basecamp', []);
@@ -945,7 +948,7 @@ Basecamp.factory('Basecamp', [ '$http', function($http) {
   var Basecamp = function (id) {
     this.id = id;
     this.properties = null;
-  }
+  };
 
   Basecamp.prototype.getBasecampSimple = function() {
     var self = this;
@@ -962,6 +965,7 @@ Basecamp.factory('Basecamp', [ '$http', function($http) {
   };
   return Basecamp;
 }]);
+
 // (function() {
   var Sigil = angular.module('Sigil', []);
 

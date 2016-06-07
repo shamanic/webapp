@@ -15,7 +15,8 @@ gameController.controller("gameController", [ '$scope', '$routeParams', 'gameAss
 	$scope.xAndyTracker = function(ev) {
 		$scope.X = ev.offsetX;
 		$scope.Y = ev.offsetY;
-	}
+	};
+	
 	$scope.fireClick = function(event) {
         $scope.X = event.offsetX;
         $scope.Y = event.offsetY;
@@ -25,11 +26,11 @@ gameController.controller("gameController", [ '$scope', '$routeParams', 'gameAss
 	$scope.zoomButtonClicked = function() {
 		$scope.zoomEnabled = !$scope.zoomEnabled;
 		console.log('clicked zoomButton, zoomEnabled: ' + $scope.zoomEnabled);
-	}
+	};
 
 	$scope.terrafy = function() {
 		terraService();
-	}
+	};
 
 	ctrl.sigilpack = new Sigil($scope.username);
 

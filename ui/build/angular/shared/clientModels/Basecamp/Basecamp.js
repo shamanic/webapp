@@ -4,7 +4,7 @@ Basecamp.factory('Basecamp', [ '$http', function($http) {
   var Basecamp = function (id) {
     this.id = id;
     this.properties = null;
-  }
+  };
 
   Basecamp.prototype.getBasecampSimple = function() {
     var self = this;

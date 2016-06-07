@@ -8,7 +8,7 @@ shamanicWebApp.directive('basecampButton', function() {
     controller: function($scope, $http) {
       $scope.showThisButton = true;
 
-      if($scope.basecampObj == null || $scope.basecampObj == undefined) {
+      if($scope.basecampObj === null || $scope.basecampObj === undefined) {
         $scope.message = "you haven\'t assigned a basecamp yet. Do so now?";
       } else {
         $scope.message = "Change Basecamp";
@@ -52,7 +52,7 @@ shamanicWebApp.directive('basecampButton', function() {
           // });
         }
 
-      }
+      };
 
       //more controller logic
     },
@@ -62,5 +62,5 @@ shamanicWebApp.directive('basecampButton', function() {
         scope.basecampButtonClass = 'basecamp-button';
       }
     }
-  }
+  };
 });
