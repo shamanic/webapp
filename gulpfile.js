@@ -34,6 +34,9 @@ gulp.task('sass', function() {
     return gulp.src(sassSCSS)
     	.pipe(sourcemaps.init())
         .pipe(bulkSass())
+        .pipe(sass({
+            outputStyle: 'compressed'
+         }).on('error', sass.logError))
         .pipe(sourcemaps.write())
         .pipe(cssmin())
         .pipe(gulp.dest('ui/css'));
@@ -44,6 +47,9 @@ gulp.task('vendor-sass', function() {
     return gulp.src(vendorSCSS)
     	.pipe(sourcemaps.init())
         .pipe(bulkSass())
+        .pipe(sass({
+            outputStyle: 'compressed'
+         }).on('error', sass.logError))
         .pipe(sourcemaps.write())
         .pipe(cssmin())
         .pipe(gulp.dest('ui/css/vendor'));
