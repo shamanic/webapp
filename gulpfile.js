@@ -24,7 +24,10 @@ var vendorJS =  ['node_modules/angular/angular.min.js'
                  ,'node_modules/angular-foundation/mm-foundation-tpls.min.js'
                  ,'node_modules/topojson/build/topojson.min.js'
                  ,'node_modules/fastclick/lib/fastclick.js'
-                 ,'node_modules/d3/d3.min.js']
+                 ,'node_modules/d3/d3.min.js'
+                 ,'node_modules/three/build/three.min.js'
+                 ,'node_modules/npm-modernizr/modernizr.js']
+                                                   
 var sassSCSS = ['ui/build/scss/*.scss', 'ui/build/scss/**/*.scss'];
 var vendorSCSS = ['node_modules/foundation/scss/foundation.scss', 'node_modules/foundation/scss/normalize.scss'];
 
@@ -72,7 +75,7 @@ gulp.task('vendor-js', function() {
         .pipe(gulp.dest('ui/js'))
         .pipe(rename('vendor.min.js'))
         .pipe(uglify({mangle: false}))
-        .pipe(gulp.dest('ui/js'));
+        .pipe(gulp.dest('ui/js/vendor'));
 });
 
 // lint task
