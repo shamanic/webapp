@@ -340,6 +340,57 @@ utilitiesController.controller("statsController", ['$scope', '$http', function($
   });
 }]);
 
+var Basecamp = angular.module('Basecamp', []);
+
+Basecamp.factory('Basecamp', [ '$http', function($http) {
+  var Basecamp = function (id) {
+    this.id = id;
+    this.properties = null;
+  };
+
+  Basecamp.prototype.getBasecampSimple = function() {
+    var self = this;
+    return $http({method: 'GET',
+                  url: 'game/basecamp/' + this.id})
+            .then(function(response) {
+              // console.log(JSON.stringify(response));
+              self.properties = response.data;
+              return response;
+            }, function(response) {
+              self.properties = response.data || "Request failed";
+              return response;
+            });
+  };
+  return Basecamp;
+}]);
+
+// (function() {
+  var Sigil = angular.module('Sigil', []);
+
+  Sigil.factory('Sigil', [ '$http', function($http) {
+    function Sigil(name) {
+      this.name = name;
+      this.properties = null;
+    }
+
+    Sigil.prototype.getSigilsByUser = function() {
+      var self = this;
+      return $http.get('game/userSigils/' + this.name)
+                  .then(function(response) {
+                    self.properties = response.data;
+                    return response;
+                  }, function(response) {
+                    self.properties = response.data || "Request failed";
+                    return response;
+                  });
+    };
+
+    Sigil.prototype.getSigilsSimple = function() {
+      return $http.get('game/sigils');
+    };
+    return Sigil;
+  }]);
+// }());
  /**
  * navigation.js
  * 	controller for main site navigation
@@ -941,55 +992,3 @@ terraService.factory('terraService', ['$window', '$timeout', function($window, $
   //  };
  };
 }]);
-
-var Basecamp = angular.module('Basecamp', []);
-
-Basecamp.factory('Basecamp', [ '$http', function($http) {
-  var Basecamp = function (id) {
-    this.id = id;
-    this.properties = null;
-  };
-
-  Basecamp.prototype.getBasecampSimple = function() {
-    var self = this;
-    return $http({method: 'GET',
-                  url: 'game/basecamp/' + this.id})
-            .then(function(response) {
-              // console.log(JSON.stringify(response));
-              self.properties = response.data;
-              return response;
-            }, function(response) {
-              self.properties = response.data || "Request failed";
-              return response;
-            });
-  };
-  return Basecamp;
-}]);
-
-// (function() {
-  var Sigil = angular.module('Sigil', []);
-
-  Sigil.factory('Sigil', [ '$http', function($http) {
-    function Sigil(name) {
-      this.name = name;
-      this.properties = null;
-    }
-
-    Sigil.prototype.getSigilsByUser = function() {
-      var self = this;
-      return $http.get('game/userSigils/' + this.name)
-                  .then(function(response) {
-                    self.properties = response.data;
-                    return response;
-                  }, function(response) {
-                    self.properties = response.data || "Request failed";
-                    return response;
-                  });
-    };
-
-    Sigil.prototype.getSigilsSimple = function() {
-      return $http.get('game/sigils');
-    };
-    return Sigil;
-  }]);
-// }());
