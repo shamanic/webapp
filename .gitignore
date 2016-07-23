@@ -8,3 +8,8 @@ scratch/*
 .sass-cache/
 .settings/
 node_modules/
+ui/js/app.min.js
+ui/js/app.min.js.orig
+ui/js/vendor/vendor.min.js
+ui/css/main.min.css
+ui/css/main.css.map
