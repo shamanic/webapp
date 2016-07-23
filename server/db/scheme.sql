@@ -77,7 +77,7 @@ ALTER TABLE locations_metadata
 GRANT ALL ON TABLE locations_metadata TO shamanic_user;
 
 
-CREATE TABLE sigils
+CREATE TABLE sigils --the 'platonic' version of a sigil with which a player can play / cast spells
 (
   sigil_id serial NOT NULL,
   sigil_uuid uuid NOT NULL,
@@ -85,7 +85,41 @@ CREATE TABLE sigils
   sigil_location bigint, --location on map, eventually this may need to be expanded to include areas / geometries
   name character varying(200),
   url character varying(500),
+  number_of_strokes integer,
   CONSTRAINT sigils_pkey PRIMARY KEY (sigil_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE sigils
+  OWNER TO shamanic_user;
+GRANT ALL ON TABLE sigils TO shamanic_user;
+)
+
+CREATE TABLE sigil_strokes
+(
+  stroke_id serial NOT NULL,
+  sigil_uuid uuid NOT NULL,
+  direction_of_stroke character varying(100) NOT NULL,
+  array_of_pixels character varying(8000) NOT NULL,
+  CONSTRAINT sigil_strokes_pkey PRIMARY KEY (stroke_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE sigils
+  OWNER TO shamanic_user;
+GRANT ALL ON TABLE sigils TO shamanic_user;
+)
+
+CREATE TABLE sigils_metadata --to track how many times they have been used, or failed to use
+(
+  id serial NOT NULL,
+  sigil_uuid uuid NOT NULL,
+  number_of_failures bigint,
+  number_of_successes bigint,
+  domain_of_magic character varying(100),
+  CONSTRAINT sigils_metadata_pkey PRIMARY KEY (sigil_id)
 )
 WITH (
   OIDS=FALSE
