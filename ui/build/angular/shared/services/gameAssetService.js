@@ -35,7 +35,7 @@ gameAssetService.factory('gameAssetService', ['$http', function($http) {
       //   return err;
     },
     getSigilsRobust: function() {
-
+      //return $http.get('');
     },
     getBasecampLocation: function() {
       return $http.get('game/basecamp/' + basecamp_icon//,

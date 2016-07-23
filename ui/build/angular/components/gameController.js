@@ -46,7 +46,7 @@ gameController.controller("gameController", [ '$scope', '$routeParams', 'gameAss
 	ctrl.sigilpack.getSigilsByUser()
 		.then(function(payload) {
 			$scope.userImageList = ctrl.sigilpack.properties;
-			// console.log('userImageList, just before basecamp obj call: ' + JSON.stringify($scope.userImageList));
+			console.log('userImageList, just before basecamp obj call: ' + JSON.stringify($scope.userImageList));
 		},
 		function(errPayload) {
 			console.log('failure getting user\'s sigilpack: ' + errPayload.data);
