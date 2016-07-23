@@ -52,5 +52,5 @@ terraService.factory('terraService', ['$window', '$timeout', function($window, $
   //    win.alert(msgs.join("\n"));
   //    msgs = [];
   //  };
- }
+ };
 }]);

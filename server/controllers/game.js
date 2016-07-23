@@ -27,6 +27,9 @@ exports.basecamp = function(req, res) {
   });
 };
 
+/**
+ * for given ID, what's the user's basecamp?
+ */
 exports.getBasecampById = function(req, res) {
   req.locationModel.getCurrentBasecamp(req, req.params.id).then(function(result) {
     console.log('Getting this user\'s basecamp, id: ' + req.params.id);
@@ -46,6 +49,9 @@ exports.threejs = function(req, res) {
   });
 };
 
+/**
+ * grid test page
+ */
 exports.grid = function(req, res) {
   res.render('pages/grid', {
     title: 'a test page for the grid directive',
@@ -53,6 +59,9 @@ exports.grid = function(req, res) {
   });
 };
 
+/**
+ * get the existing sigils for user
+ */
 exports.getSigilsForUser = function(req, res) {
   req.sigilRepo.getSigilsByUserId(req, req.params.username).then(function(result) {
     console.log('Getting this user\'s sigils, username: ' + req.params.username);

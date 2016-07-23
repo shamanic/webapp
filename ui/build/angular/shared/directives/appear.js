@@ -29,7 +29,7 @@ shamanicWebApp.directive('appearButton', function() {
 				}, function errorCallback(response) {
 					$scope.message = 'Location could not be saved';
 				});
-			}
+			};
 
 			// show button if they user is logged in
 			$scope.showThisButton = false;

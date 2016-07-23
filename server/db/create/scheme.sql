@@ -107,9 +107,9 @@ CREATE TABLE sigil_strokes
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE sigils
+ALTER TABLE sigil_strokes
   OWNER TO shamanic_user;
-GRANT ALL ON TABLE sigils TO shamanic_user;
+GRANT ALL ON TABLE sigil_strokes TO shamanic_user;
 )
 
 CREATE TABLE sigils_metadata --to track how many times they have been used, or failed to use
@@ -124,7 +124,7 @@ CREATE TABLE sigils_metadata --to track how many times they have been used, or f
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE sigils
+ALTER TABLE sigils_metadata
   OWNER TO shamanic_user;
-GRANT ALL ON TABLE sigils TO shamanic_user;
+GRANT ALL ON TABLE sigils_metadata TO shamanic_user;
 )

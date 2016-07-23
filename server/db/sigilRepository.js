@@ -1,26 +1,26 @@
 /**
-*   Repository for anything sigil-related
-*
-*/
-
+ * Repository for anything sigil-related
+ */
 var sigilRepo = function() {
 
+  /**
+   * nice cat!  what's it for?
+   */
   var getSigilsTest = function(req, res) {
-
     var result = [
-    {
-      url: 'http://placekitten.com/201/201',
-      name: 'sigilOne'
-    },
-    {
-      url: 'http://placekitten.com/201/203',
-      name: 'sigilTwo'
-    }
-  ];
+        {
+          url: 'http://placekitten.com/201/201',
+          name: 'sigilOne'
+        },
+        {
+          url: 'http://placekitten.com/201/203',
+          name: 'sigilTwo'
+        }
+    ];
 
-  res.writeHead(200, {'Content-Type': 'application/json'});
-  var json = JSON.stringify(result);
-  res.end(json);
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    var json = JSON.stringify(result);
+    res.end(json);
   };
 
   /**

@@ -39,8 +39,7 @@
   transition:.3s;
 }
 
-#ngScopedZoomButton{
-
+#ngScopedZoomButton {
   width: 10%;
   padding:10px;
   background-color: #000000;
@@ -48,8 +47,7 @@
   float:right;
 }
 
-#getSigilButton{
-
+#getSigilButton {
   width: 10%;
   padding:10px;
   background-color: #000000;
@@ -58,7 +56,6 @@
 }
 
 #generateTerraCycleButton {
-
   width:10%;
   background-color: #000000;
   padding:10px;
@@ -73,10 +70,12 @@
 #getSigilButton:hover {
   background-color: #555555;
 }
+
 .button {
   margin:5px;
   background-color: #000000;
 }
+
 .button:hover {
   background-color: #555555;
 }
@@ -85,6 +84,7 @@ button {
   margin:5px;
 	background-color: #000000;
 }
+
 button:hover {
 	background-color: #555555;
 }

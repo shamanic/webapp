@@ -1,7 +1,7 @@
 /**
  * Users Controller
  *
- * @author khinds
+ * @author khinds, davidps
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright Shamanic, http://www.shamanic.io
  */
@@ -213,10 +213,9 @@ exports.saveLocation = function(req, res) {
 }
 
 /**
- *	user with no basecamp - assign it
+ * user with no basecamp - assign it
  */
 exports.assignNewBasecamp = function(req, res) {
-	// debugger;
 	if(!req.variableHelper.isEmpty(req.session.user.uuid)) {
 		console.log("assignBasecamp route matched, params: " + JSON.stringify(req.body.location));
 		req.locationModel.addBasecamp(req, req.body.location)
@@ -233,14 +232,18 @@ exports.assignNewBasecamp = function(req, res) {
 	}
 };
 
+/**
+ * update the basecamp for user
+ */
 exports.updateBasecamp = function(req, res) {
 	if(!req.variableHelper.isEmpty(req.session.user.uuid)) {
-		//turn off old basecamp
+
+		//@todo turn off old basecamp
 
 		//assign basecamp status to current locationlocation
 		req.locationModel.updateLocationToBasecamp(req, req.body.location)
 		.then(function(result) {
-
+        
 		})
 		.catch(function(err) {
 
@@ -250,7 +253,9 @@ exports.updateBasecamp = function(req, res) {
 	}
 };
 
-// generic require logged in user checking for any routes that may require it
+/**
+ * generic require logged in user checking for any routes that may require it
+ */
 exports.requireLogin = function(req, res, next) {
 	if (!req.session.user) {
 	  res.redirect('/user/login');
@@ -259,7 +264,9 @@ exports.requireLogin = function(req, res, next) {
 	}
 };
 
-// determine if the user requesting the page is an admin, for Utils pages
+/**
+ * determine if the user requesting the page is an admin, for Utils pages
+ */
 exports.isAdmin = function(req, res, next) {
   if (!req.session.user.username) {
       res.redirect('/');

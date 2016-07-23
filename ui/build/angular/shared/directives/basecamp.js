@@ -113,3 +113,15 @@ shamanicWebApp.directive('basecampButton', ['$timeout', '$http', function($timeo
     }
   }
 }]);
+      // };
+
+//       //more controller logic
+//     },
+//     link: function(scope, element, attributes) {
+//       // linking logic, maybe necessary?
+//       if(scope.type == 'button') {
+//         scope.basecampButtonClass = 'basecamp-button';
+//       }
+//     }
+//   };
+// });

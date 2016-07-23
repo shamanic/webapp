@@ -19,7 +19,7 @@ shamanicWebApp.directive('locationTracker', function() {
 					}).then(function successCallback(response) {
 						window.elevation = response.data;
 				}, function errorCallback(response) {});
-		    }
+		    };
 		    if (navigator.geolocation) {
 		    	navigator.geolocation.getCurrentPosition($scope.savePosition);
 		    }

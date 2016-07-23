@@ -36,7 +36,7 @@ shamanicWebApp.directive('d3Map', ['gameAssetService', function(gameAssetService
 	      if(scope.zoomEnabled) {
         	console.log("zoomEnabled...");
         	svg.call(d3.behavior.zoom().on("zoom", redraw));
-        };
+          }
 
 	      svg.append("rect")
 	        .attr("fill", function(d) {
@@ -157,7 +157,7 @@ shamanicWebApp.directive('d3Map', ['gameAssetService', function(gameAssetService
 	          }
 	        }
 	        setInterval(updateGradient, 10);
-	      };
+	      }
 	      function transition(path) {
 	        path.transition()
 	          .duration(7500)
@@ -165,14 +165,14 @@ shamanicWebApp.directive('d3Map', ['gameAssetService', function(gameAssetService
 	          .each("end", function() {
 	            d3.select(this).call(transition);
 	          });
-	      };
+	      }
 	      function tweenDash() {
 	        var l = this.getTotalLength(),
 	          i = d3.interpolateString("0," + l, l + "," + l);
 	        return function(t) {
 	          return i(t);
-	        }
-	      };
+	        };
+	      }
 	    }
-	  }
+	  };
 }]);

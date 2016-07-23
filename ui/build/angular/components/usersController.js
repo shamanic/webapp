@@ -35,7 +35,7 @@ userControllers.controller("loginController", [ '$scope', '$http', function($sco
 				    $scope.userNotFound = true;
 				    return;
 			    }
-			    window.location = "/user/account"
+			    window.location = "/user/account";
 		    }, function(response) {
 			    isFormValid = false;
 		    });
@@ -79,7 +79,7 @@ userControllers.controller("signupController", [ '$scope', '$http', function($sc
 						value : value
 					}
 				}).then(function(response) {
-					if (response.data == 'value exists') {
+					if (response.data === 'value exists') {
 						if (key == 'email') {
 							$scope.showEmailTakenError = true;
 						} else {
@@ -89,7 +89,7 @@ userControllers.controller("signupController", [ '$scope', '$http', function($sc
 					}
 
 					// submit the create user form after the 2nd validation has finished
-					if (key == 'username' && isFormValid) {
+					if (key === 'username' && isFormValid) {
 						document.forms.signupform.submit();
 					}
 
@@ -160,11 +160,11 @@ userControllers.controller("forgotController", [ '$scope', '$http', function($sc
 		$scope.userNotFound = false;
 
 		// if they didn't put anything in the fields, then we're not found
-		if ((typeof($scope.username) == 'undefined' || $scope.username == '') && (typeof($scope.email) == 'undefined' || $scope.email == '')) {
+		if ((typeof($scope.username) === 'undefined' || $scope.username === '') && (typeof($scope.email) === 'undefined' || $scope.email === '')) {
 			$scope.userNotFound = true;
 			isFormValid = false;
 		}
-
+		
 		// if valid form, check if the user account exists for given email or username
 		if (isFormValid) {
 		    $http({
