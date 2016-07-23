@@ -8,6 +8,7 @@
     }
 
     Sigil.prototype.getSigilsByUser = function() {
+      debugger;
       var self = this;
       return $http.get('game/userSigils/' + this.name)
                   .then(function(response) {
