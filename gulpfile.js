@@ -27,7 +27,7 @@ var vendorJS =  ['node_modules/angular/angular.min.js'
                  ,'node_modules/d3/d3.min.js'
                  ,'node_modules/three/build/three.min.js'
                  ,'node_modules/npm-modernizr/modernizr.js']
-                                                   
+
 var sassSCSS = ['ui/build/scss/*.scss', 'ui/build/scss/**/*.scss'];
 var vendorSCSS = ['node_modules/foundation/scss/foundation.scss', 'node_modules/foundation/scss/normalize.scss'];
 
@@ -86,7 +86,7 @@ gulp.task('lint', function() {
 });
 
 // build a new version of the site with all dependancies included to the 'build' folder
-gulp.task('build', ['lint','sass','angular', 'vendor-sass', 'vendor-js']);
+gulp.task('build', ['lint','sass','vendor-js','angular', 'vendor-sass']);
 
 // the default gulp job which will create a 'build' of the site as well as initiating the file system watchers to continue your development
 gulp.task('default', ['build', 'watch']);

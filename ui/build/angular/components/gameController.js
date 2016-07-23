@@ -10,13 +10,13 @@ gameController.controller("gameController", [ '$scope', '$routeParams', 'gameAss
 
 	var ctrl = this;
 	$scope.username = window.username;
-	console.log('username from session: ' + req.session.user.username);
+	//console.log('username from session: ' + req.session.user.username);
 
 	$scope.xAndyTracker = function(ev) {
 		$scope.X = ev.offsetX;
 		$scope.Y = ev.offsetY;
 	};
-	
+
 	$scope.fireClick = function(event) {
         $scope.X = event.offsetX;
         $scope.Y = event.offsetY;

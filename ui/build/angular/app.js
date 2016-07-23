@@ -1,5 +1,5 @@
 /**
- * Shamanic HTML5 Web Application 
+ * Shamanic HTML5 Web Application
  *
  * @author khinds
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
@@ -14,9 +14,10 @@ shamanicWebApp.config(['$routeProvider', '$httpProvider', function($routeProvide
 	var key, result = [];
 	for (key in data) {
 	    if (data.hasOwnProperty(key)) {
-		if (typeof (data[key]) == "undefined")
-		    data[key] = '';
-			result.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+		    if (typeof (data[key]) === "undefined") {
+		      data[key] = '';
+        }
+			 result.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
 	    }
 	}
 	return result.join("&");

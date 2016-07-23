@@ -10,7 +10,7 @@
  * play the game home page
  */
 exports.index = function(req, res){
-	res.render('pages/game', {
+	res.render('pages/game/game', {
 		title: 'Shamanic [Play]',
 		websiteName: req.siteEnvironment.websiteConfig.websiteName,
     username: req.session.user.username
