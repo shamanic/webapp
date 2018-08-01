@@ -1,0 +1,31 @@
+<% include ../../partials/header %>
+<div class='main-container' ng-controller='userAccountController'>
+  <script type='text/javascript'>
+  	/** get this to work without the global window value */
+  	window.fullname = '<%=fullname%>';
+  </script>
+	Welcome <%=username%>! <br/><br/>
+	<a class="tiny button" ng-click="showAccountForm = !showAccountForm">Manage Account</a><br/>
+	<div ng-show='showUpdateMessage'>{{updateMessage}}</div><br/>	
+	<div class="row" ng-show='showAccountForm'>
+		<div class="six columns">
+			<form class="custom" id="updateAccountForm" name="updateAccountForm" action="/user/update" method="post" enctype="application/x-www-form-urlencoded" novalidate>			
+				<fieldset>
+					<legend>Update Information</legend>
+					<input id="fullname" type="text" name="fullname" ng-model="fullname" placeholder="Full Name" required>
+					<span class="error" ng-show="showValidationMessages && updateAccountForm.fullname.$error.required">Please provide your full name</span>
+					<input id="password" type="password" name="password" ng-model="password" placeholder="Password" ng-minlength="5" required>
+					<span class="error"  ng-show="showValidationMessages && (updateAccountForm.password.$error.required || updateAccountForm.password.$error.minlength)">Enter a password of at least 5 characters</span>
+					<input id="confirm" type="password" name="confirm" ng-model="confirm" placeholder="Confirm Password" ng-minlength="5" required>
+					<span class="error"  ng-show="showValidationMessages && (updateAccountForm.confirm.$error.required || !passwordMatch)">Enter a matching password</span>
+				</fieldset>
+				<div class="row">
+					<div class="large-6 large-centered columns">
+						<input type="button" class="button expand" value="Update Account"  ng-click='submit(updateAccountForm.$valid)'/>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<% include ../../partials/footer %>

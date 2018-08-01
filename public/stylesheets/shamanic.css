@@ -1,0 +1,53 @@
+.main-container {
+	padding:5px;
+	padding-top: 50px;
+	min-height: 700px;
+}
+#main-title-link {
+	color: #FFFFFF;
+}
+a {
+	color: #000000;
+}
+a:hover {
+	color: #666666;
+}
+.button {
+	background-color: #000000;
+}
+.button:hover {
+	background-color: #555555;
+}
+.sigils{
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 30px;
+  border: 2px solid black;
+}
+.gallery-image{
+  position: absolute;
+  width: 200px;
+  height: 200px;
+}
+svg {
+  border: 2px solid gold;
+}
+#gradient {
+  width: 100%;
+  height: 800px;
+  padding: 0px;
+  margin: 0px;
+}
+#getSigils{
+  position:absolute;
+  top:20px;
+  left:30px;
+  background-color: #000000;
+}
+#getSigils:hover {
+background-color: #555555;
+}
+#sigilGallery {
+  position:absolute;
+}
