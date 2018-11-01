@@ -19,7 +19,6 @@
     "debug": "^4.1.0",
     "ejs": "^2.5.5",
     "emailjs": "0.3.13",
-    "express": "4.0.0",
     "fastclick": "~1.0.6",
     "fingerprintjs2": "^1.4.1",
     "font-awesome": "~4.5.0",
@@ -38,6 +37,7 @@
     "topojson": "~1.6.22"
   },
   "devDependencies": {
+    "express": "^4.16.4",
     "gulp": "~3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",
