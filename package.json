@@ -7,7 +7,7 @@
     "start": "node ./server/bin/www"
   },
   "dependencies": {
-    "angular": "~1.4.9",
+    "angular": "~1.7.9",
     "angular-foundation": "~0.8.0",
     "angular-route": "~1.4.9",
     "axios": "^0.15.3",
