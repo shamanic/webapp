@@ -10,7 +10,7 @@
     "angular": "~1.4.9",
     "angular-foundation": "~0.8.0",
     "angular-route": "~1.4.9",
-    "axios": "^0.15.3",
+    "axios": "^0.19.2",
     "bcrypt": "^3.0.2",
     "body-parser": "1.0.2",
     "cookie-parser": "1.0.1",
