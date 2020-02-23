@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Welcome to Shamanic a new kind of MMORPG",
   "engines": {
-    "node":"12.9.1"
+    "node": "12.9.1"
   },
   "private": true,
   "scripts": {
@@ -16,7 +16,6 @@
     "angular-foundation": "~0.8.0",
     "angular-route": "~1.4.9",
     "axios": "^0.15.3",
-    "bcrypt": "^3.0.2",
     "body-parser": "1.0.2",
     "cookie-parser": "1.0.1",
     "cookie-session": "1.1.0",
@@ -41,6 +40,7 @@
     "topojson": "~1.6.22"
   },
   "devDependencies": {
+    "bcrypt": "^3.0.8",
     "express": "^4.16.4",
     "gulp": "~3.9.1",
     "gulp-concat": "^2.6.0",
