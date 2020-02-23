@@ -23,6 +23,7 @@
     "debug": "^4.1.0",
     "ejs": "^2.5.5",
     "emailjs": "0.3.13",
+    "express": "^4.16.4",
     "fastclick": "~1.0.6",
     "fingerprintjs2": "^1.4.1",
     "font-awesome": "~4.5.0",
