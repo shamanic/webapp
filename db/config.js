@@ -8,24 +8,31 @@ var dbConnectionConfig = { host:AppSettings.DBConfig.db.host,
     password:AppSettings.DBConfig.db.password, 
     database:AppSettings.DBConfig.db.database 
 };
-var regex = /(.*):\/\/([a-z].*):([0-9a-f].*)@(.*):([0-9]{4})\/([a-z0-9].*)/g;
+var regex = new RegExp(/(.*):\/\/([a-z].*):([0-9a-f].*)@(.*):([0-9]{4})\/([a-z0-9].*)/);
 var groups = process.env.DATABASE_URL.match(regex);
-/*  groups[0]=dbAdapterName(postgres)
+console.log('your groups are: ');
+console.log(groups);
+// At index 0: the full match.
+// At index 1: the contents of the first parentheses.
+// At index 2: the contents of the second parentheses.
+/*  groups[0]= the full match
+*   then,
+*   groups[1]=dbAdapterName(postgres)
 *   ://
-*   groups[1]=username
+*   groups[2]=username
 *   :
-*   groups[2]=password
+*   groups[3]=password
 *   @
-*   groups[3]=host
+*   groups[4]=host
 *   :
-*   groups[4]=port
+*   groups[5]=port
 *   /
-*   groups[5]=database
+*   groups[6]=database
 */
 var herokuDbConnCfg = {
-    host: groups[3],
-    user: groups[1],
-    password: groups[2],
-    database: groups[5]
+    host: groups[4],
+    user: groups[2],
+    password: groups[3],
+    database: groups[6]
 }
 exports.dbWrapper = new DBWrapper('pg', herokuDbConnCfg);
