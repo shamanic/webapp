@@ -1,0 +1,64 @@
+.main-container {
+	padding:5px;
+	padding-top: 50px;
+	min-height: 700px;
+}
+
+.content {
+  height: 800px;
+}
+
+.controlPanel {
+  border: 2px solid gold;
+  overflow:auto;
+  padding:10px;
+}
+
+.sigils{
+  position: fixed;
+  width: 200px;
+  height: 200px;
+  margin: 30px;
+  border: 2px solid black;
+  z-index:100;
+}
+
+.gallery-image{
+  width: 200px;
+  height: 200px;
+}
+
+svg {
+  top:0;
+  left:0;
+  border: 2px solid gold;
+}
+
+canvas {
+  border: 2px solid red;
+  z-index: 6;
+}
+
+#svgAnchor {
+  visibility: hidden;
+  height:38px;
+  left:10;
+}
+
+#gradient {
+  top:0;
+  left:0;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+#sigilGallery {
+  position:absolute;
+}
+
+#terraCycle {
+  visibility: hidden;
+  position:absolute;
+  margin:auto;
+}
