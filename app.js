@@ -44,7 +44,7 @@ app.use(cookieParser(AppSettings.sessionKeys.cookieParserKey));
 app.use(session({secret: AppSettings.sessionKeys.sessionKey}));
 
 /** make our db and application models and other global libraries accessible to our router */
-var dbi = require('./db/config');
+var dbi = require('./src/db/config');
 dbi.dbWrapper.connect();
 app.use(function(req,res,next){
     req.db = dbi.dbWrapper;

@@ -4,13 +4,13 @@
 
 ## Developing
 
-To install dependancies and build UI:
+To install dependencies and build UI:
 
 Install "npm package manager" for the command line
 
-$ npm install
+$ npm install // gets you the packages
 
-$ grunt
+$ npm run-script build // builds the site via webpack
 
 Prerequisites:
 
@@ -41,4 +41,6 @@ Then run `cd config/virtualmachine/ && vagrant up` to load and provision the VM.
 check that the psql instance generated and logged you in correctly by runnning `psql -d [your-database-name]` and confirming you have a prompt for psql. 
 You can check your relations were generated correctly by running `\dt` at the prompt.
 
-Run the server by using `nodejs server/bin/www`. You're now ready to develop, debug and test your work!
+To enable the database backend you'll need to define this environment variable: `DATABASE_URL`. Give it whatever values are specific to your postgres installation, e.g. `postgres://[db_user]:[db_password]@127.0.0.1:5432/[db_name]`. You can set the environment variable in a terminal session or pass it in as an arg to the start command like `DATABASE_URL=[db_connection_string] npm start`.
+
+Either way, the command to run the server is `npm start`. You're now ready to develop, debug and test your work!
