@@ -1,8 +1,0 @@
-<% include ../partials/header %>
-
-<div class='main-container' ng-controller='gameController'>
-	   <sigil-gallery images="imageList" ng-show="showSigils"></sigil-gallery>
-	   <d3-Map data="mapData"></d3-Map>
-	   <button id="getSigils" ng-click="showSigils = !showSigils">Get Sigils</button>
-</div>
-<% include ../partials/footer %>
