@@ -36,7 +36,7 @@
     "morgan": ">=1.9.1",
     "ms": "^0.7.1",
     "node-dbi": "0.7.1",
-    "node-uuid": "1.4.3",
+    "node-uuid": "1.4.8",
     "pg": "4.5.7",
     "promise": "~7.1.1",
     "serve-favicon": "^2.5.0",
