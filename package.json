@@ -25,7 +25,7 @@
     "debug": "^4.1.0",
     "ejs": "^2.5.5",
     "emailjs": "0.3.13",
-    "express": "^4.16.4",
+    "express": "^4.22.2",
     "fastclick": "~1.0.6",
     "fingerprintjs2": "^1.4.1",
     "font-awesome": "~4.5.0",
@@ -45,7 +45,7 @@
   "devDependencies": {
     "css-loader": "^3.4.2",
     "ejs-html-loader": "^4.0.1",
-    "express": "^4.16.4",
+    "express": "^4.22.2",
     "file-loader": "^5.1.0",
     "gulp": "~5.0.1",
     "gulp-concat": "^2.6.0",
